@@ -1,5 +1,8 @@
 package com.notfound404.arena;
 
+import java.util.ArrayList;
+import com.notfound404.character.Bike;
+
 public class GameArena {
     
     //The cells of the arena
@@ -33,6 +36,5 @@ public class GameArena {
         RIGHT
     }
 
-    //Max enemy count
-
+    ArrayList<Bike> bikes;
 }
