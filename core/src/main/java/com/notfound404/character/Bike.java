@@ -33,8 +33,8 @@ public abstract class Bike {
     //战车的属性
 
     protected Color color;
-    protected int lp;
-    protected int maxLP;
+    protected float lp;
+    protected float maxLP;
     protected int exp;//For enemy bikes, exp awarded when destroyed; for player bike, current exp
     protected int level;
     protected boolean isAlive;
@@ -47,7 +47,7 @@ public abstract class Bike {
     //Constants for bike behavior
     //战车行为常量
     protected final static int ACCELERATOR_DURATION = 3; //Duration of accelerator effect in seconds
-    protected final static double INEFFECTIVE_DURATION = 0.5; //Duration of disco/trail collision effects in seconds
+    protected final static int INEFFECTIVE_DURATION = 3; //Duration of disco/trail collision effects in distance units
 
     //Attack properties
     //攻击属性
@@ -75,8 +75,66 @@ public abstract class Bike {
     public int getX() {return x;}
     public int getY() {return y;}
 
+    
+    
     public void setDirection(GameArena.Direction dir) {
         this.dir = dir;
+    }
+
+    abstract void update(float deltaTime);
+
+    protected void moveOneStep() {
+        switch (dir) {
+            case UP:
+                y += 1;
+                break;
+            case DOWN:
+                y -= 1;
+                break;
+            case LEFT:
+                x -= 1;
+                break;
+            case RIGHT:
+                x += 1;
+                break;
+        }
+        switch(arena.getCellValue(x, y)){
+            case 0: //Empty cell
+                break;
+            case 1: //Trail cell
+                if (!isIneffective) {
+                    lp -= 0.5f;
+                    isIneffective = true;
+                }
+                break;
+            case 2: //Bike cell
+                lp -= 1.0f;
+                break;
+            case 3: //Accelerator cell
+                hasAccelerator = true;
+                break;
+            case 4: //Wall cell
+                lp =0;
+                isAlive = false;
+                break;
+            case 5: //Disco cell: pick up disco
+                //Only pick up if it's your own disco
+                //Remain to be implemented
+                break;
+            default: //Out of bounds/cliff
+                lp = 0;
+                isAlive = false;
+                break;
+        }
+    }
+
+    public void shootDisco(int targetX, int targetY) {
+        if (discoSlots > 0) {
+            disco newDisco = new disco(this, targetX, targetY);
+            discoSlots -= 1;
+            //Add disco to arena's disco list
+            //Remain to be implemented
+        }
     }
 
 }

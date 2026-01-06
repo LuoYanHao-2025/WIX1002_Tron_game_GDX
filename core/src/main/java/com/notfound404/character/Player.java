@@ -1,12 +1,14 @@
 package com.notfound404.character;
 import com.notfound404.arena.GameArena;
 import com.notfound404.character.Bike;
+import com.badlogic.gdx.graphics.Color;
 
 public class Player extends Bike {
     public final String playerType;//"Tron" or "Kelvin"
     protected final String playerID;//Enter by player, used for RANKING system
 
-    public Player(String playerType, String playerID, int startX, int startY, GameArena arena) {
+    public Player(String playerType, String playerID, int startX, int startY, Color color, GameArena arena) {
+        super(arena, startX, startY, color);
         this.playerType = playerType;
         this.playerID = playerID;
         this.x = startX;
@@ -22,6 +24,5 @@ public class Player extends Bike {
         this.accumulator = 0;
 
     }
-
 
 }
