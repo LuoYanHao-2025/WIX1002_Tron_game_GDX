@@ -1,5 +1,7 @@
 package com.notfound404.character;
 
+import com.notfound404.arena.GameArena;
+
 //This class is the abstraction of all the objects that have their positions
 //and moves on time.
 public abstract class Mobile {
@@ -13,6 +15,10 @@ public abstract class Mobile {
     //The velocity
     protected int speed;
 
+    //The arena where the object is located
+    //所在的竞技场
+    protected GameArena arena;
+
     //ID
     /*The id representing the state of a cell in arena
     * Each cell can have the following values:
@@ -22,6 +28,7 @@ public abstract class Mobile {
     * 3 = accelerator cell
     * 4 = wall cell
     * 5 = disco cell
+    * 6 = dead disco cell
     * 
     * -1 = out of bounds/cliff
     * */
@@ -58,6 +65,7 @@ public abstract class Mobile {
 
     //The object is dead and disposal operation.
     abstract public void dispose();
+    abstract public boolean isDisposed();
 
     public int getX() {return x;}
     public int getY() {return y;}

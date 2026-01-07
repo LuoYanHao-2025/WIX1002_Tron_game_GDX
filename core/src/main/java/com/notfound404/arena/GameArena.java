@@ -22,6 +22,7 @@ public class GameArena {
     * 3 = accelerator cell
     * 4 = wall cell
     * 5 = disco cell
+    * 6 = dead disco cell
     * 
     * -1 = out of bounds/cliff
     * */

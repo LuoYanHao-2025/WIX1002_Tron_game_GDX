@@ -26,7 +26,7 @@ public class Explosion {
     }
 
     class Particle{
-        int x, y;
+        private int x, y;
         Color color;
         float lifeTime;
         float maxLifeTime;
@@ -63,5 +63,8 @@ public class Explosion {
 
             return lifeTime >0;
         }
+
+        public int getX(){return x;}
+        public int getY(){return y;}
     }
 }
