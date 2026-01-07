@@ -1,0 +1,65 @@
+package com.notfound404.character;
+
+//This class is the abstraction of all the objects that have their positions
+//and moves on time.
+public abstract class Mobile {
+    //Position in the Arena Grid
+    //Unit: Game Arena cells
+    //位置和速度
+    //单位：竞技场单元格
+    
+    protected int x;
+    protected int y;
+    //The velocity
+    protected int speed;
+
+    //ID
+    /*The id representing the state of a cell in arena
+    * Each cell can have the following values:
+    * 0 = empty cell
+    * 1 = trail cell
+    * 2 = bike cell
+    * 3 = accelerator cell
+    * 4 = wall cell
+    * 5 = disco cell
+    * 
+    * -1 = out of bounds/cliff
+    * */
+    protected int idNum;
+
+    protected boolean isActive;
+
+    //Accumulator to handle `float` movement versus `int` grids conflicts
+    //用于处理“float”移动与“int”网格冲突的累加器
+    protected float accumulator;
+
+    Mobile(int x, int y, int speed, int idNum){
+        this.x = x;
+        this.y = y;
+        this.speed = speed;
+        this.idNum = idNum;
+        isActive = true;
+        accumulator = 0f;
+    }
+
+    void update(float deltaTime){
+        if(!isActive)
+            return;
+        accumulator += deltaTime * speed;
+        for(;accumulator >= 1;accumulator++){
+            moveOneStep();
+        }
+    }
+
+    //Move one step and update self state
+    abstract protected void moveOneStep();
+
+    public boolean isActive(){return isActive;}
+
+    //The object is dead and disposal operation.
+    abstract public void dispose();
+
+    public int getX() {return x;}
+    public int getY() {return y;}
+
+}

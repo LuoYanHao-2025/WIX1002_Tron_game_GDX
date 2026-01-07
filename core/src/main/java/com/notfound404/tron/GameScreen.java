@@ -1,6 +1,8 @@
 package com.notfound404.tron;
 
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.math.Vector2;
+import com.notfound404.arena.GameArena;
 
 
 /** Game screen where the main gameplay occurs. */
@@ -8,8 +10,21 @@ public class GameScreen implements Screen {
 
     public final Main game;
 
+    //Here need to declare objects will be used in the Game.
+    //这里需要声明一些游戏内要用到的对象，例如车，地图，背景音乐等等
+    private GameArena arena;
+
+    Vector2 touchPos;//Mouse position
+
     GameScreen(Main game) {
         this.game = game;
+        //Initialization Objects declared above
+        //接下来初始化上面声明的对象，加载文件就在这里，可以写一些method或者class来增强可读性
+
+        //Input to Game configuration
+        //设置游戏：可能有读取存档和新游戏两种方案。现在只做新游戏
+        arena = new GameArena();
+        touchPos = new Vector2();
     }
 
     @Override
@@ -20,7 +35,20 @@ public class GameScreen implements Screen {
     @Override
     public void render(float delta) {
         // Draw your screen here. "delta" is the time since last render in seconds.
+        input();
+        logic();
+        draw();
     }
+
+    private void input(){
+    }
+
+    private void logic(){
+    }
+
+    private void draw(){}
+
+
 
     @Override
     public void resize(int width, int height) {
@@ -29,6 +57,7 @@ public class GameScreen implements Screen {
         if(width <= 0 || height <= 0) return;
 
         // Resize your screen here. The parameters represent the new window size.
+        game.viewport.update(width, height,true);
     }
 
     @Override
@@ -49,5 +78,6 @@ public class GameScreen implements Screen {
     @Override
     public void dispose() {
         // Destroy screen's assets here.
+        
     }
 }

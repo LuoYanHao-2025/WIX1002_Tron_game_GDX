@@ -8,17 +8,8 @@ import com.badlogic.gdx.graphics.Color;
 
 //Superclass for all bike types
 //所有战车类型的父类
-public abstract class Bike {
+public abstract class Bike extends Mobile{
     
-    //Position and speed of the bike
-    //Unit: Game Arena cells
-    //位置和速度
-    //单位：竞技场单元格
-
-    protected int x;
-    protected int y;
-    protected int speed;
-
     protected GameArena.Direction dir;
 
     //Accumulator to handle `float` movement versus `int` grids conflicts
@@ -37,7 +28,6 @@ public abstract class Bike {
     protected float maxLP;
     protected int exp;//For enemy bikes, exp awarded when destroyed; for player bike, current exp
     protected int level;
-    protected boolean isAlive;
     protected boolean hasAccelerator;
     protected boolean isIneffective;
     protected int discoSlots;
@@ -56,32 +46,22 @@ public abstract class Bike {
     protected Trail bikeTrail;
 
     //Constructor
-    public Bike(GameArena arena, int x, int y, Color color) {
+    public Bike(GameArena arena, int x, int y, int speed, int idNum, Color color) {
+        super(x, y, speed, idNum);
         this.arena = arena;
-        this.x = x;
-        this.y = y;
         this.color = color;
         this.dir = GameArena.Direction.UP;
-        this.accumulator = 0f;
-        this.isAlive = true;
         this.hasAccelerator = false;
         this.isIneffective = false;
         this.discoSlots = 3;
         this.discoMAX = 3;
         this.discoRange = 3;
     }
-
-
-    public int getX() {return x;}
-    public int getY() {return y;}
-
-    
+  
     
     public void setDirection(GameArena.Direction dir) {
         this.dir = dir;
     }
-
-    abstract void update(float deltaTime);
 
     protected void moveOneStep() {
         switch (dir) {
@@ -115,15 +95,16 @@ public abstract class Bike {
                 break;
             case 4: //Wall cell
                 lp =0;
-                isAlive = false;
+                isActive = false;
                 break;
             case 5: //Disco cell: pick up disco
                 //Only pick up if it's your own disco
                 //Remain to be implemented
+                //The collision damage will be implement in Class disco
                 break;
             default: //Out of bounds/cliff
                 lp = 0;
-                isAlive = false;
+                isActive = false;
                 break;
         }
     }
@@ -144,35 +125,28 @@ public abstract class Bike {
  * It breaks through trails and damages bikes on contact.
  * It stops after a certain duration.
  */
-class disco {
-    private int x;
-    private int y;
-    private final float vx;
-    private final float vy;
+class disco extends Mobile {
+
     private int discoRange;
-    private float accumulatorX;
-    private float accumulatorY;
-    private boolean isActive;
+    private Bike masterBike;
+    private float kx;
+    private float ky;
 
     public disco(Bike master, int x, int y) {
-        this.x = master.getX();
-        this.y = master.getY();
+        super(x, y, 5, 5);
+        masterBike = master;
         float vx = x-this.x;
         float vy = y-this.y;
         float normV = (float) Math.sqrt(vx*vx + vy*vy);
-        this.vx = vx / normV;
-        this.vy = vy / normV;
+        this.kx = vx / normV;
+        this.ky = vy / normV;
         this.discoRange = master.discoRange;
-        accumulatorX = accumulatorY = 0;
         isActive = true;
     }
 
     public void update(float deltaTime) {
-        if (!isActive) return;
-        accumulatorX += deltaTime * vx * 10; //Speed factor
-        accumulatorY += deltaTime * vy * 10;
-        //Loop to move in integer steps
+        super.update(deltaTime);
     }
-    public int getX() { return x; }
-    public int getY() { return y; }
+
+    protected void moveOneStep(){}
 }
