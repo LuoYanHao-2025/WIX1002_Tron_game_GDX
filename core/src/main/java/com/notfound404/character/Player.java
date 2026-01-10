@@ -4,12 +4,13 @@ package com.notfound404.character;
 import com.notfound404.levelsystem.PlayerLevelSystem;
 //.....
 import com.notfound404.arena.GameArena;
-import com.notfound404.character.Bike;
+import com.notfound404.arena.GameArena.Direction;
 import com.badlogic.gdx.graphics.Color;
 
 public class Player extends Bike {
     public final String playerType;//"Tron" or "Kelvin"
     protected final String playerID;//Enter by player, used for RANKING system
+
     private PlayerLevelSystem levelSystem; // 玩家的升级系统
 
     //The constructor should later be modified as IO
@@ -132,11 +133,7 @@ public class Player extends Bike {
     public double getXPCap() {
         return levelSystem.getCurrentXPCap();
     }
-    
-    //获取经验百分比（用于UI进度条）
-    public float getXPPercentage() {
-        return levelSystem.getXPPercentage();
-    }
+
     
     //是否可以发射飞盘
     public boolean canShootDisc() {

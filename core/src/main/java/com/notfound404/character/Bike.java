@@ -1,6 +1,7 @@
 package com.notfound404.character;
 
 import com.notfound404.arena.GameArena;
+import com.notfound404.arena.GameArena.Direction;
 import com.badlogic.gdx.graphics.Color;
 
 //Superclass for all bike types
@@ -48,11 +49,30 @@ public abstract class Bike extends Mobile{
         this.isIneffective = false;
         this.discoSlots = this.discoMAX = 3;
         this.discoRange = 5;
+        this.bikeTrail = new Trail(this);
+        arena.addTrail(bikeTrail);
     }
   
     
     public void setDirection(GameArena.Direction dir) {
-        this.dir = dir;
+        //Bike cannot turn around
+        if(!isOpposite(dir))
+            this.dir = dir;
+    }
+
+    //Usage: refuse the opposite command
+    private boolean isOpposite(Direction dir_in){
+        switch(dir){
+            case UP:
+                return dir_in == Direction.DOWN;
+            case DOWN:
+                return dir_in == Direction.UP;
+            case LEFT:
+                return dir_in == Direction.LEFT;
+            case RIGHT:
+                default:
+                return dir_in == Direction.RIGHT;
+        }
     }
 
     protected void moveOneStep() {
@@ -111,6 +131,8 @@ public abstract class Bike extends Mobile{
 
 
     public void shootDisco(int targetX, int targetY) {
+        if(targetX == x && targetY == y)
+            return;
         if (discoSlots > 0) {
             arena.addDisco(new Disco(this, targetX, targetY));
             discoSlots -= 1;
@@ -123,6 +145,8 @@ public abstract class Bike extends Mobile{
             discoSlots++;
         }
     }
+
+
 
     @Override
     public void dispose(){

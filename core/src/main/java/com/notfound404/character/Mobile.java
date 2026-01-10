@@ -13,7 +13,7 @@ public abstract class Mobile {
     protected int x;
     protected int y;
     //The velocity
-    protected int speed;
+    protected float speed;
 
     //The arena where the object is located
     //所在的竞技场
@@ -43,13 +43,13 @@ public abstract class Mobile {
     Mobile(int x, int y, int idNum){
         this.x = x;
         this.y = y;
-        speed = 0;
+        speed = 0f;
         this.idNum = idNum;
         isActive = true;
         accumulator = 0f;
     }
 
-    void update(float deltaTime){
+    public void update(float deltaTime){
         if(!isActive)
             return;
         accumulator += deltaTime * speed;

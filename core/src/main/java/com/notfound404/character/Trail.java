@@ -1,6 +1,7 @@
 package com.notfound404.character;
 import java.util.LinkedList;
 
+import com.badlogic.gdx.graphics.Color;
 import com.notfound404.arena.GameArena;
 
 public class Trail {
@@ -18,6 +19,8 @@ public class Trail {
 
     private Bike ownerBike;
     private GameArena arena;
+
+    public final Color color;
 
 
     /* Trail unit class */
@@ -43,6 +46,7 @@ public class Trail {
         maxTrailLength = ownerBike.trailLength;
         arena = ownerBike.arena;
         length = 0;
+        color = ownerBike.color;
     }
 
     void oneMove(){

@@ -103,7 +103,7 @@ class Disco extends Mobile {
                 break;
             case 1://Kill the Trail
                 trailCrash();
-            case 2://Cover the Bike
+            case 2://Cover the Bike, bike handles its collision
             case 3://Kill/Cover Accelerator
             case 0://Nothing
             default:

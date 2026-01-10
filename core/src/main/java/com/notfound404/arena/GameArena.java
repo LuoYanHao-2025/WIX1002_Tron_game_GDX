@@ -1,6 +1,10 @@
 package com.notfound404.arena;
 
 import java.util.ArrayList;
+import java.util.Vector;
+
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
 import com.notfound404.character.*;
 
 public class GameArena {
@@ -41,16 +45,42 @@ public class GameArena {
         RIGHT
     }
 
+    //All the Objects we need to draw(update) frame by frame
     private ArrayList<Bike> bikes;
     private ArrayList<Explosion> explosions;
     private ArrayList<Disco> discos;
+    private ArrayList<Trail> trails;
+
+    private Bike playerBike;
+    private final static int SHOOTSPAN = 3; //The span required between 2 times we check disco shoot. (unit: second)
+    private float shootTimer;
 
 
     public GameArena() {
-        grid = new int[ARENA_WIDTH + 2*BORDER_WIDTH][ARENA_HEIGHT + + 2*BORDER_WIDTH];
+        grid = new int[ARENA_WIDTH + 2*BORDER_WIDTH][ARENA_HEIGHT + 2*BORDER_WIDTH];
+        //临时测试地图 全0
+        //边界：墙
+        for(int i = 0 ;i<ARENA_WIDTH + 2*BORDER_WIDTH;i++){
+            for(int j = 0;j<ARENA_HEIGHT + 2*BORDER_WIDTH;j++){
+                if(i<=1||j<=1||i>=ARENA_WIDTH + BORDER_WIDTH||j>=ARENA_HEIGHT + BORDER_WIDTH)
+                    grid[i][j] = 4;
+                else
+                    grid[i][j] = 0;
+            }
+        }
+        //以上包括注释正式版删除
         bikes = new ArrayList<Bike>();
+
+        //Create the first bike: Player
+        //创建第一个玩家，类一定有玩家，固定列表第一个是玩家
+        bikes.add(new Player("Tron","Tester", ARENA_SIZE/2, ARENA_SIZE/3, this));
+
+        //正式版创建玩家也用其他方法：玩家文件在选择界面已经读取，这里调用读取类返回的参数即可
         explosions = new ArrayList<Explosion>();
         discos = new ArrayList<Disco>();
+
+        playerBike = bikes.get(0);
+        shootTimer = 0f;
     }
 
 
@@ -79,4 +109,53 @@ public class GameArena {
     public void addDisco(Disco disco){
         discos.add(disco);
     }
+
+    public void addTrail(Trail trail){
+        trails.add(trail);
+    }
+
+    //Input WASD control COMMAND
+    //输入方向
+    public void inputDir(Direction dir){
+        playerBike.setDirection(dir);
+    }
+
+    //Input where to shoot the disco
+    //输入射击命令
+    public void inputShoot(int tX, int tY, float deltaTime){
+        shootTimer-=deltaTime;
+        if(shootTimer<=0){
+            playerBike.shootDisco(tX, tY);
+            shootTimer = SHOOTSPAN;
+        }
+    }
+
+    public void shootDiscoP(int targetX, int targetY, float deltaTime){
+        
+    }
+
+    public void update(float deltaTime){
+
+        //Check the state. Then Update the state. Leave disposal to the next time
+        for(Disco disco:discos){
+            if(disco.isDisposed())
+                discos.remove(disco);
+            disco.update(deltaTime);
+        }
+        for(Bike bike : bikes){
+            if(bike.isDisposed())
+                bikes.remove(bike);
+            bike.update(deltaTime);
+            
+        }
+        for(Explosion epl: explosions){
+            if(epl.update(deltaTime))
+                explosions.remove(epl);
+        }
+    }
+
+    public void draw(ShapeRenderer shaper){
+        //Here we draw the whole map
+    }
+
 }

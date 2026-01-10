@@ -16,13 +16,13 @@ public class Explosion {
     }
 
     public boolean update(float deltaTime) {
-        boolean isActive = true;
+        boolean isDone = true;
         for (Particle p : particles) {
             if(p.update(deltaTime)) {
-                isActive = false;
+                isDone = false;
             }
         }
-        return isActive;
+        return isDone;
     }
 
     class Particle{
