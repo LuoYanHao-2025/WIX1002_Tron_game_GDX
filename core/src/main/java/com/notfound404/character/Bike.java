@@ -158,4 +158,29 @@ public abstract class Bike extends Mobile{
         return !isActive;
     }
 
+    //升级系统用
+    public float getLP() { return lp; }
+    public void setLP(float lp) { this.lp = lp; }
+
+    public float getMaxLP() { return maxLP; }
+    public void setMaxLP(float maxLP) { this.maxLP = maxLP; }
+
+    public int getExp() { return exp; }
+    public void setExp(int exp) { this.exp = exp; }
+
+    public int getLevel() { return level; }
+    public void setLevel(int level) { this.level = level; }
+
+    public float getSpeed() { return speed; }
+    public void setSpeed(float speed) { this.speed = speed; }
+
+    public int getDiscoMAX() { return discoMAX; }
+    public void setDiscoMAX(int discoMAX) { this.discoMAX = discoMAX; }
+
+    public int getDiscoSlots() { return discoSlots; }
+    public void setDiscoSlots(int discoSlots) { this.discoSlots = discoSlots; }
+
+    public int getDiscoRange() { return discoRange; }
+    public void setDiscoRange(int discoRange) { this.discoRange = discoRange; }
+
 }

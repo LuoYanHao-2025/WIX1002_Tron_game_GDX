@@ -17,20 +17,25 @@ public class Enemy extends Bike {
 
         this.levelSystem = new EnemyLevelSystem(difficulty);
         this.levelSystem.setEnemy(this);
-        syncStatsToLevel();
+        // 2. 根据初始等级同步 Bike 变量
+        syncInitialStats();
 
         enemyCount++;
     }
 
 
-    private void syncStatsToLevel() {
-        int level = levelSystem.getCurrentLevel();
-        float multiplier = (float)Math.pow(BaseLevelSystem.getStatMultiplier(), level - 1);
+    private void syncInitialStats() {
+        // 从 System 获取初始等级（根据难度决定的等级）
+        this.level = levelSystem.getCurrentLevel();
+        double multiplier = Math.pow(BaseLevelSystem.getStatMultiplier(), level - 1);
         
-        // 初始基础值（例如生命10，速度1.0）乘以倍数
+        // 初始化 Bike 变量
         this.maxLP = (int)(10 * multiplier);
         this.lp = maxLP;
-        this.speed = 1.0f * multiplier;
+        this.speed = (int)(1.0 * multiplier);
+        this.discoRange = 5 + (level / 2);
+        this.discoMAX = 2; // 敌人默认飞盘上限
+        this.discoSlots = 2;
     }
     
     @Override
