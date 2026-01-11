@@ -1,5 +1,6 @@
 package com.notfound404.character;
 
+import com.badlogic.gdx.graphics.Color;
 import com.notfound404.arena.GameArena.Direction;
 public /** Disco
  * 飞碟类
@@ -16,6 +17,7 @@ class Disco extends Mobile {
     private float accumulatorY;
     private Direction verDir;
     private Direction horiDir;
+    private Color color;
 
     Disco(Bike master, int x, int y) {
         super(x, y, 5);
@@ -33,6 +35,7 @@ class Disco extends Mobile {
         this.discoRange = master.discoRange;
         isActive = true;
         accumulatorX = accumulatorY =0;
+        color = master.color;
     }
 
 
@@ -133,5 +136,9 @@ class Disco extends Mobile {
     @Override
     public boolean isDisposed(){
         return idNum == 0;
+    }
+
+    public Color getColor(){
+        return color;
     }
 }

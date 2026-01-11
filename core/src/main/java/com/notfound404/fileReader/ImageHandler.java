@@ -1,13 +1,24 @@
 package com.notfound404.fileReader;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.notfound404.arena.GameArena;
+import com.notfound404.character.Bike;
+import com.notfound404.character.Disco;
+import com.notfound404.character.Trail;
+import com.notfound404.arena.GameArena.Direction;
+
 import java.io.*;
 import java.util.Scanner;
 
 public class ImageHandler {
 
-    private final static int CELLSIZE = 8;//Pixels width/height for a grid
+    private final static int CELL_SIZE = 8;//Pixels width/height for a grid
+
+    //Some offset because the unmatched size of Viewport and Arena
+    //Add it when mapping Arena co-ordinates to Viewport pixel co-ordinate
+    private final static int OFFSET_X = 64;
+    private final static int OFFSET_Y = 4;
     
     //Patter for bike and disco
     //0 for background, 1 for white pixels, 2 for self color 
@@ -26,11 +37,11 @@ public class ImageHandler {
      */
 
     private GameArena arena;
-    private ShapeRenderer shaperRdr;
+    private ShapeRenderer shaper;
 
     public ImageHandler(GameArena arena, ShapeRenderer shapeRdr){
         this.arena = arena;
-        this.shaperRdr = shapeRdr;
+        this.shaper = shapeRdr;
         //正式版这里读文件，现在用手动的矩阵取代
         bikeShape = bikeShapeReader("bike.txt");
         discoShape = discoShapeReader("disco.txt");
@@ -74,13 +85,46 @@ public class ImageHandler {
         return discoShape;
     }
 
-    public void drawBike(){}
+    public void drawBike(Bike bike){}{
+        
+    }
 
-    public void drawDisco(){}
+    public void drawDisco(Disco disco){
+        int baseX = disco.getX();
+        int baseY = disco.getY();
+        int idNum = arena.getCellValue(baseX, baseY);
+        if(idNum!=5 && idNum!=6)
+            return;
+        Color color = disco.getColor();
+        baseX *=CELL_SIZE;
+        baseX +=64;
+        baseY *=CELL_SIZE;
+        baseY +=4;
+        for (int r = 0; r < 8; r++) {       // rows
+            for (int c = 0; c < 8; c++) {   // columns
+                int pixelColor = discoShape[r][c];
+                if(pixelColor == 0) continue;
+                shaper.setColor(pixelColor == 1 ? Color.WHITE : color);
 
-    public void drawTrail(){}
+                float drawX = baseX + c;
+                float drawY = baseY + r;
 
-    public void drawWall(){}
+                shaper.rect(drawX, drawY, 1, 1);
 
-    public void drawExplosion(){}
+            }
+        }
+        
+        
+
+    }
+
+    public void drawWall(int x, int y){
+        shaper.setColor(Color.WHITE);
+        
+        float screenX = x * CELL_SIZE + OFFSET_X;
+        float screenY = y * CELL_SIZE + OFFSET_Y;
+        
+        shaper.rect(screenX, screenY, CELL_SIZE, CELL_SIZE);
+    }
+
 }

@@ -1,7 +1,10 @@
 package com.notfound404.tron;
 
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.ScreenUtils;
 import com.notfound404.arena.GameArena;
 
 
@@ -46,7 +49,21 @@ public class GameScreen implements Screen {
     private void logic(){
     }
 
-    private void draw(){}
+    private void draw(){
+        //Clean the screen
+        ScreenUtils.clear(Color.BLACK);
+        game.shapeRenderer.setProjectionMatrix(game.viewport.getCamera().combined);
+        game.shapeRenderer.begin(ShapeType.Filled);
+
+        //Draw the Arena
+        arena.draw(game.shapeRenderer);
+
+        game.shapeRenderer.end();
+
+        //Maybe something else will be drawn here
+        //Like the text messages
+        //Life point display...
+    }
 
 
 

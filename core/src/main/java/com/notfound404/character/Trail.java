@@ -2,6 +2,7 @@ package com.notfound404.character;
 import java.util.LinkedList;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.notfound404.arena.GameArena;
 
 public class Trail {
@@ -79,6 +80,16 @@ public class Trail {
             int y = unit.getY();
             if(arena.getCellValue(x, y) == 1)
                 arena.setCellValue(x, y, IDNUM);
+        }
+    }
+
+    public void drawTrail(ShapeRenderer painter){
+        for(TrailUnit unit : trailUnits){
+            int x = unit.getX();
+            int y = unit.getY();
+            painter.setColor(color);
+            if(arena.getCellValue(x, y)==1)
+                painter.rect(x*GameArena.CELL_SIZE+64, y*GameArena.CELL_SIZE+4, GameArena.CELL_SIZE, GameArena.CELL_SIZE);
         }
     }
 }
