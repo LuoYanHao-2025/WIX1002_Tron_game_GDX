@@ -1,12 +1,11 @@
-package com.notfound404.AI_system;
+package com.notfound404.character;
 
 import com.notfound404.arena.GameArena;
 import com.notfound404.arena.GameArena.Direction;
-import com.notfound404.character.Enemy;
-import com.notfound404.character.Player;
+
 import java.util.*;
 
-public class EnemyAI {
+public class AI_system {
     private Enemy enemy;
     private GameArena arena;
     private Player player;
@@ -16,7 +15,7 @@ public class EnemyAI {
     private float timer = 0, shootTimer = 0;
     private float moveInterval, shootCooldown;
 
-    public EnemyAI(Enemy enemy, GameArena arena, Player player) {
+    public AI_system(Enemy enemy, GameArena arena, Player player) {
         this.enemy = enemy;
         this.arena = arena;
         this.player = player;

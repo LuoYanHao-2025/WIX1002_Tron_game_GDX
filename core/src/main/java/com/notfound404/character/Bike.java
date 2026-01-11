@@ -113,7 +113,6 @@ public abstract class Bike extends Mobile{
                 break;
             case 4: //Wall cell
                 lp =0;
-                isActive = false;
                 break;
             case 5: //The disco damage: -1
                 lp-=1.0f;
@@ -124,9 +123,10 @@ public abstract class Bike extends Mobile{
             case -1:
             default: //Out of bounds/cliff
                 lp = 0;
-                isActive = false;
                 break;
         }
+        if(lp<=0)
+            dispose();
     }
 
 
@@ -151,6 +151,7 @@ public abstract class Bike extends Mobile{
     @Override
     public void dispose(){
         isActive = false;
+        bikeTrail.dispose();
     }
     @Override
     public boolean isDisposed(){

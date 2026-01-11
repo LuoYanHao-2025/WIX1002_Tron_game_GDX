@@ -25,12 +25,12 @@ public class Enemy extends Bike {
 
     private void syncStatsToLevel() {
         int level = levelSystem.getCurrentLevel();
-        double multiplier = Math.pow(BaseLevelSystem.getStatMultiplier(), level - 1);
+        float multiplier = (float)Math.pow(BaseLevelSystem.getStatMultiplier(), level - 1);
         
         // 初始基础值（例如生命10，速度1.0）乘以倍数
         this.maxLP = (int)(10 * multiplier);
         this.lp = maxLP;
-        this.speed = 1.0 * multiplier;
+        this.speed = 1.0f * multiplier;
     }
     
     @Override

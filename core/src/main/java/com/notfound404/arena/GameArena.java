@@ -55,6 +55,12 @@ public class GameArena {
     private final static int SHOOTSPAN = 3; //The span required between 2 times we check disco shoot. (unit: second)
     private float shootTimer;
 
+    private boolean isGameOver;
+    //这里稍后再添加一个胜利判断布尔变量
+    //private boolean isTriumph;
+    //再来一个BOSS 是否上过场的布尔变量
+    //private boolean isBossOn;
+
 
     public GameArena() {
         grid = new int[ARENA_WIDTH + 2*BORDER_WIDTH][ARENA_HEIGHT + 2*BORDER_WIDTH];
@@ -81,6 +87,8 @@ public class GameArena {
 
         playerBike = bikes.get(0);
         shootTimer = 0f;
+
+        isGameOver = false;
     }
 
 
@@ -136,6 +144,18 @@ public class GameArena {
 
     public void update(float deltaTime){
 
+        if(playerBike.isDisposed()){
+            //Call GameOver function
+            isGameOver = true;
+            return;
+        }
+
+        //这里写后续写检测敌人的功能
+        /** 没有敌人就检测是否胜利（最终BOSS 'CLU'被干碎
+         * 胜利就直接设置胜利boolean变量并返回
+         *有敌人就比较最大敌人数量和生成间隔，满足条件就用随机生成方法生成一个新敌人
+        */
+            
         //Check the state. Then Update the state. Leave disposal to the next time
         for(Disco disco:discos){
             if(disco.isDisposed())
@@ -143,8 +163,9 @@ public class GameArena {
             disco.update(deltaTime);
         }
         for(Bike bike : bikes){
-            if(bike.isDisposed())
+            if(bike.isDisposed()){
                 bikes.remove(bike);
+            }    
             bike.update(deltaTime);
             
         }

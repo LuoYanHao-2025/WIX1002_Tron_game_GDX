@@ -1,4 +1,4 @@
-package com.notfound404.filereader;
+package com.notfound404.fileReader;
 
 import com.notfound404.arena.GameArena;
 import java.io.BufferedReader;

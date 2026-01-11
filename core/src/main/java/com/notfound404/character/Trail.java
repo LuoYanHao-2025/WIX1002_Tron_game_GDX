@@ -12,7 +12,7 @@ public class Trail {
      * Discovery a unit is of ID 0, it is considered a crash point. Do not paint it.
      * */
 
-    private final static int IDNUM = 1;
+    private static int IDNUM = 1;
     private LinkedList<TrailUnit> trailUnits;
     private int maxTrailLength;
     private int length;
@@ -68,5 +68,17 @@ public class Trail {
             length--;
         } 
             
+    }
+
+    public void dispose(){
+        IDNUM = 0;
+
+    //Destroy the whole trail by setting the cell with ID 1(trail) to ID 0(trail)
+        for(TrailUnit unit: trailUnits){
+            int x = unit.getX();
+            int y = unit.getY();
+            if(arena.getCellValue(x, y) == 1)
+                arena.setCellValue(x, y, IDNUM);
+        }
     }
 }
