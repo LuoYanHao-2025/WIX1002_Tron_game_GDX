@@ -1,1 +1,6 @@
 .gitkeep
+map/Accelerate Territory.txt
+map/Death Canyon.txt
+map/Mirror Battery.txt
+map/Test.txt
+map/Test2.txt
