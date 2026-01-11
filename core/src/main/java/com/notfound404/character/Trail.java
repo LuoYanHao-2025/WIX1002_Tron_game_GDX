@@ -13,7 +13,7 @@ public class Trail {
      * Discovery a unit is of ID 0, it is considered a crash point. Do not paint it.
      * */
 
-    private static int IDNUM = 1;
+    private final int IDNUM = 1;
     private LinkedList<TrailUnit> trailUnits;
     private int maxTrailLength;
     private int length;
@@ -57,7 +57,8 @@ public class Trail {
         trailUnits.add(new TrailUnit(x, y));
 
         //The former state of the box is bike -- draw. Or the trail unit should be left empty.
-        if(arena.getCellValue(x, y)==2)
+        int value = arena.getCellValue(x, y);
+        if(value==2||value == 6)
             arena.setCellValue(x, y,IDNUM);
 
         while(length > maxTrailLength){
@@ -72,14 +73,13 @@ public class Trail {
     }
 
     public void dispose(){
-        IDNUM = 0;
 
         //Destroy the whole trail by setting the cell with ID 1(trail) to ID 0(trail)
         for(TrailUnit unit: trailUnits){
             int x = unit.getX();
             int y = unit.getY();
-            if(arena.getCellValue(x, y) == 1)
-                arena.setCellValue(x, y, IDNUM);
+            if(arena.getCellValue(x, y) == IDNUM)
+                arena.setCellValue(x, y, 0);
         }
         trailUnits.clear();
     }

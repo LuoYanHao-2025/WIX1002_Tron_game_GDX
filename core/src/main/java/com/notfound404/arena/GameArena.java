@@ -118,8 +118,10 @@ public class GameArena {
     public void addExplosion(int x, int y) {
         for(int i = x-1; i <= x + 1 ;i++){
             for(int j = y - 1; j <= y + 1; j++){
-                if(grid[x][y] == 1){
-                    grid[x][y] = 0;
+                if(i >= 0 && i < grid.length && j >= 0 && j < grid[0].length) {
+                    if(grid[i][j] == 1){
+                        grid[i][j] = 0;
+                    }
                 }
             }
         }

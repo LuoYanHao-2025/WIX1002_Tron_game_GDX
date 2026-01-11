@@ -49,7 +49,7 @@ public abstract class Bike extends Mobile{
         this.hasAccelerator = false;
         this.isIneffective = false;
         this.discoSlots = this.discoMAX = 3;
-        this.discoRange = 10;
+        this.discoRange = 24;
         this.bikeTrail = new Trail(this);
         arena.addTrail(bikeTrail);
         markSelf();
@@ -108,6 +108,7 @@ public abstract class Bike extends Mobile{
                 break;
             case 2: //Bike cell
                 lp -= 1.0f;
+                arena.addExplosion(x, y);
                 break;
             case 3: //Accelerator cell
                 hasAccelerator = true;
@@ -115,6 +116,7 @@ public abstract class Bike extends Mobile{
                 break;
             case 4: //Wall cell
                 lp =0;
+                arena.addExplosion(x, y);
                 break;
             case 5: //The disco damage: -1
                 lp-=1.0f;
