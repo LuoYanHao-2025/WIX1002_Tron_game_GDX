@@ -1,4 +1,6 @@
 .gitkeep
+image/bike.txt
+image/disco.txt
 map/Accelerate Territory.txt
 map/Death Canyon.txt
 map/Mirror Battery.txt

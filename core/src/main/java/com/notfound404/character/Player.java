@@ -21,18 +21,28 @@ public class Player extends Bike {
         this.playerType = playerType;
         this.playerID = playerID;
 
+        // 1. 设置初始等级和经验 (使用从 Bike 继承的变量)
+        this.level = 1;
+        this.exp = 0;
+
         initializeStatsByPlayerType();
 
         this.exp = 0;
         //The slot will be decided by the input file
         this.discoSlots = this.discoMAX =  3;
+        this.discoRange = 5;
 
         this.dir = GameArena.Direction.UP;
         this.accumulator = 0;
 
-        // 初始化玩家专用升级系统
         this.levelSystem = new PlayerLevelSystem();
         this.levelSystem.setPlayer(this);
+    }
+
+    // 飞盘逻辑直接读取 Bike 的变量
+    public void retrieveDiscs(int count) {
+        // 此时 discoMAX 已经是被 PlayerLevelSystem 升级过的值
+        this.discoSlots = Math.min(this.discoSlots + count, this.discoMAX);
     }
 
 
@@ -65,27 +75,9 @@ public class Player extends Bike {
     //                    UI 系统对接接口
     // ==========================================================
 
+    
     /**
-     * 【UI对接点 1：检查升级弹窗】
-     * UI系统在主循环中检测此状态。
-     * @return true 表示达到偶数等级，UI应弹出技能三选一界面
-     */
-    public boolean isReadyForSkillChoice() {
-        int level = getPlayerLevel();
-        return level >= 2 && level % 2 == 0;
-    }
-
-    /**
-     * 【UI对接点 2：处理玩家点击】
-     * 玩家在UI界面点击按钮后，由UI系统回调此方法。
-     * @param choice 按钮编号 (1:反弹, 2:上限, 3:弹道)
-     */
-    public void makeSkillChoice(int choice) {
-        levelSystem.makeSkillChoice(choice);
-    }
-
-    /**
-     * 【UI对接点 3：经验进度条】
+     * 【UI对接点：经验进度条】
      * 供UI渲染层调用，获取当前等级经验百分比。
      */
     public float getXPPercentage() {

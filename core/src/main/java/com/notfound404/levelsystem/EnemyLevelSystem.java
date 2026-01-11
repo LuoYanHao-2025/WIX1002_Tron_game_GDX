@@ -50,9 +50,14 @@ public class EnemyLevelSystem extends BaseLevelSystem {
     @Override
     protected void applyBaseStatUpgrade() {
         if (enemy != null) {
-            enemy.maxLP = (int)(enemy.maxLP * STAT_MULTIPLIER);
-            enemy.lp = enemy.maxLP; // 升级补血
-            enemy.speed = enemy.speed * STAT_MULTIPLIER;
+            // 统一使用 Bike 变量
+            enemy.setMaxLP((float)(enemy.getMaxLP() * STAT_MULTIPLIER));
+            enemy.setLP(enemy.getMaxLP());
+            enemy.setSpeed((float)(enemy.getSpeed() * STAT_MULTIPLIER));
+            enemy.setLevel(currentLevel);
+
+            if (currentLevel % 2 == 0) {
+            enemy.setDiscoRange(enemy.getDiscoRange() + 1);
         }
     }
 }
