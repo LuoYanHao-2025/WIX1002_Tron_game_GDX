@@ -146,36 +146,12 @@ public class Player extends Bike {
         return 0;
     }
     
-    /**
-     * 回收飞盘
-     * @param count 回收的数量
-     */
-    public void retrieveDiscs(int count) {
-        int maxDiscs = levelSystem.getMaxDiscs();
-        this.discoSlots = Math.min(this.discoSlots + count, maxDiscs);
-    }
     
-    /**
-     * 获取飞盘反弹次数
-     */
-    public int getDiscBounceCount() {
-        return levelSystem.getBounceCount();
-    }
     
-    /**
-     * 获取最大飞盘数量
-     */
-    public int getMaxDiscs() {
-        return levelSystem.getMaxDiscs();
-    }
-    
-    /**
-     * 获取弹道数量
-     */
-    public int getProjectileCount() {
-        return levelSystem.getProjectileCount();
-    }
-    
+    @Override
+    public int getDiscoMAX() {
+        return this.discoMAX; 
+}
     /**
      * 获取每次射击消耗的飞盘数
      */
