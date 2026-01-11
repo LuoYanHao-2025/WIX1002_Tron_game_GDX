@@ -1,14 +1,19 @@
 package com.notfound404.arena;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 
 //This class implements explosion effects in the arena
 public class Explosion {
     private static final int PARTICLE_COUNT = 20;
     private Particle[] particles;
+    private final int centerX;
+    private final int centerY;
 
     public Explosion(int centerX, int centerY) {
+        this.centerX = centerX;
+        this.centerY = centerY;
         particles = new Particle[PARTICLE_COUNT];
         for (int i = 0; i < PARTICLE_COUNT; i++) {
             particles[i] = new Particle(centerX, centerY);
@@ -66,5 +71,14 @@ public class Explosion {
 
         public int getX(){return x;}
         public int getY(){return y;}
+    }
+
+    public void draw(ShapeRenderer painter){
+        int baseX = centerX * 8 + 64;
+        int baseY = centerY * 8 + 4;
+        for(Particle particle:particles){
+            painter.setColor(particle.color);
+            painter.rect(baseX + particle.getX(), baseY + particle.getY(), 1, 1);
+        }
     }
 }

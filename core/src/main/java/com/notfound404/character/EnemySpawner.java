@@ -1,5 +1,4 @@
 package com.notfound404.character;
-import com.notfound404.character.Enemy;
 import com.notfound404.arena.GameArena;
 import com.badlogic.gdx.graphics.Color;
 

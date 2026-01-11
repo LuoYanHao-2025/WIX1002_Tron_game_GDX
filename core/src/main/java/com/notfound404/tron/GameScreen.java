@@ -1,11 +1,15 @@
 package com.notfound404.tron;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.notfound404.arena.GameArena;
+import com.notfound404.arena.GameArena.Direction;
+import com.notfound404.fileReader.ImageHandler;
 
 
 /** Game screen where the main gameplay occurs. */
@@ -16,8 +20,9 @@ public class GameScreen implements Screen {
     //Here need to declare objects will be used in the Game.
     //这里需要声明一些游戏内要用到的对象，例如车，地图，背景音乐等等
     private GameArena arena;
+    private ImageHandler painter;
 
-    Vector2 touchPos;//Mouse position
+    Vector3 touchPos;//Mouse position
 
     GameScreen(Main game) {
         this.game = game;
@@ -27,7 +32,8 @@ public class GameScreen implements Screen {
         //Input to Game configuration
         //设置游戏：可能有读取存档和新游戏两种方案。现在只做新游戏
         arena = new GameArena();
-        touchPos = new Vector2();
+        touchPos = new Vector3();
+        painter = new ImageHandler(arena, game.shapeRenderer);
     }
 
     @Override
@@ -37,16 +43,46 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
+        float deltaTime = Gdx.graphics.getDeltaTime();
         // Draw your screen here. "delta" is the time since last render in seconds.
-        input();
-        logic();
+        input(deltaTime);
+        logic(deltaTime);
         draw();
     }
 
-    private void input(){
+    private void input(float delta){
+
+        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+            arena.inputDir(Direction.UP);
+        } else if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+            arena.inputDir(Direction.DOWN);
+        } else if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+            arena.inputDir(Direction.LEFT);
+        } else if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+            arena.inputDir(Direction.RIGHT);
+        }
+
+        if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+
+            game.viewport.unproject(touchPos.set(Gdx.input.getX(), Gdx.input.getY(),0));
+
+
+            float arenaX = touchPos.x - 64; // OFFSET_X
+            float arenaY = touchPos.y - 4;  // OFFSET_Y
+
+
+            int gridX = (int) (arenaX / 8);   // CELL_SIZE
+            int gridY = (int) (arenaY / 8);   // CELL_SIZE
+
+            if (gridX >= 0 && gridX < 44 && gridY >= 0 && gridY < 44) {
+                arena.inputShoot(gridX, gridY, delta);
+            }
+        }
+
     }
 
-    private void logic(){
+    private void logic(float delta){
+        arena.update(delta);
     }
 
     private void draw(){
@@ -56,7 +92,7 @@ public class GameScreen implements Screen {
         game.shapeRenderer.begin(ShapeType.Filled);
 
         //Draw the Arena
-        arena.draw(game.shapeRenderer);
+        arena.draw(game.shapeRenderer,painter);
 
         game.shapeRenderer.end();
 

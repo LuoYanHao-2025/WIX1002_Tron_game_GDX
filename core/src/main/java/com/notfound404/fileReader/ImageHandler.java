@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.notfound404.arena.GameArena;
 import com.notfound404.character.Bike;
 import com.notfound404.character.Disco;
-import com.notfound404.character.Trail;
 import com.notfound404.arena.GameArena.Direction;
 
 import java.io.*;
@@ -49,7 +48,7 @@ public class ImageHandler {
 
     private static int[][] bikeShapeReader(String fin){
         int[][] bikeShape = new int[8][8];
-        String path = "/image/" + fin;
+        String path = "image/" + fin;
 
         try(Scanner scanner = new Scanner(new FileInputStream(path))){
             for (int row = 0; row < 8; row++) {
@@ -68,7 +67,7 @@ public class ImageHandler {
 
     private static int[][] discoShapeReader(String fin){
         int[][] discoShape = new int[8][8];
-        String path = "/image/" + fin;
+        String path = "image/" + fin;
 
         try(Scanner scanner = new Scanner(new FileInputStream(path))){
             for (int row = 0; row < 8; row++) {
@@ -85,9 +84,53 @@ public class ImageHandler {
         return discoShape;
     }
 
-    public void drawBike(Bike bike){}{
-        
+    public void drawBike(Bike bike){
+        int baseX = bike.getX();
+        int baseY = bike.getY();
+        if(arena.getCellValue(baseX, baseY)!=2)
+            return;
+        Color color = bike.getColor();
+        Direction dir = bike.gDirection();
+        baseX *=CELL_SIZE;
+        baseX +=64;
+        baseY *=CELL_SIZE;
+        baseY +=4;
+        for (int r = 0; r < 8; r++) {       // rows
+            for (int c = 0; c < 8; c++) {   // columns
+                int row = 0;
+                int col = 0;
+                switch(dir){
+                    case UP:
+                        row = 7-c;
+                        col = r;
+                        break;
+                    case DOWN:
+                        row = c;
+                        col = 7-r;
+                        break;
+                    case LEFT:
+                        row = 7-r;
+                        col = 7-c;
+                        break;
+                    case RIGHT:
+                    default:
+                        row = r;
+                        col = c;
+                        break;
+                }
+                int pixelColor = bikeShape[row][col];
+                if(pixelColor == 0) continue;
+                shaper.setColor(pixelColor == 1 ? Color.WHITE : color);
+
+                float drawX = baseX + c;
+                float drawY = baseY + r;
+
+                shaper.rect(drawX, drawY, 1, 1);
+
+            }
+        }
     }
+
 
     public void drawDisco(Disco disco){
         int baseX = disco.getX();

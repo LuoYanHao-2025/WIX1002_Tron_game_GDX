@@ -53,7 +53,7 @@ public abstract class Mobile {
         if(!isActive)
             return;
         accumulator += deltaTime * speed;
-        for(;accumulator >= 1;accumulator++){
+        for(;accumulator >= 1;accumulator--){
             moveOneStep();
         }
     }

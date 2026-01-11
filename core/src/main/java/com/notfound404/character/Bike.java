@@ -51,6 +51,7 @@ public abstract class Bike extends Mobile{
         this.discoRange = 5;
         this.bikeTrail = new Trail(this);
         arena.addTrail(bikeTrail);
+        markSelf();
     }
   
     
@@ -157,6 +158,9 @@ public abstract class Bike extends Mobile{
     public boolean isDisposed(){
         return !isActive;
     }
+
+    public Color getColor(){ return color; }
+    public Direction gDirection(){ return dir; }
 
     //升级系统用
     public float getLP() { return lp; }

@@ -1,11 +1,11 @@
 package com.notfound404.arena;
 
 import java.util.ArrayList;
-import java.util.Vector;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector2;
 import com.notfound404.character.*;
+import com.notfound404.fileReader.ImageHandler;
 
 public class GameArena {
     
@@ -76,14 +76,18 @@ public class GameArena {
         }
         //以上包括注释正式版删除
         bikes = new ArrayList<Bike>();
+        explosions = new ArrayList<Explosion>();
+        discos = new ArrayList<Disco>();
+        trails = new ArrayList<Trail>();
 
         //Create the first bike: Player
         //创建第一个玩家，类一定有玩家，固定列表第一个是玩家
         bikes.add(new Player("Tron","Tester", ARENA_SIZE/2, ARENA_SIZE/3, this));
 
         //正式版创建玩家也用其他方法：玩家文件在选择界面已经读取，这里调用读取类返回的参数即可
-        explosions = new ArrayList<Explosion>();
-        discos = new ArrayList<Disco>();
+        //测试版：创建一个敌人
+        //正式版用专门的随机方法来创建敌人
+        bikes.add(new Enemy(this, ARENA_SIZE/2, 2*ARENA_SIZE/3, Color.RED, 1));
 
         playerBike = bikes.get(0);
         shootTimer = 0f;
@@ -138,10 +142,6 @@ public class GameArena {
         }
     }
 
-    public void shootDiscoP(int targetX, int targetY, float deltaTime){
-        
-    }
-
     public void update(float deltaTime){
 
         if(playerBike.isDisposed()){
@@ -175,8 +175,27 @@ public class GameArena {
         }
     }
 
-    public void draw(ShapeRenderer shaper){
+    public void draw(ShapeRenderer shaper, ImageHandler painter){
         //Here we draw the whole map
+        for(Trail trail : trails){
+            trail.drawTrail(shaper);
+        }
+
+        for(Disco disco : discos){
+            painter.drawDisco(disco);
+        }
+
+        for(Bike bike : bikes){
+            painter.drawBike(bike);
+        }
+
+        for(Explosion explosion: explosions){
+            explosion.draw(shaper);
+        }
+        
     }
+
+
+    public boolean gameOver(){return isGameOver;}
 
 }
