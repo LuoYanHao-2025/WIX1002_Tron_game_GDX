@@ -40,13 +40,13 @@ public class Explosion {
 
         //Hit the Trail
         public Particle(int startX, int startY) {
-            this.x = startX;
-            this.y = startY;
+            this.x = 0;
+            this.y = 0;
             this.color = new Color(MathUtils.random(), MathUtils.random(), MathUtils.random(), 1);
-            this.maxLifeTime = MathUtils.random(0.5f, 1.5f);
+            this.maxLifeTime = MathUtils.random(1f, 2f);
             this.lifeTime = maxLifeTime;
             float angle = MathUtils.random(0, 2 * MathUtils.PI);
-            float speed = MathUtils.random(50, 150);
+            float speed = MathUtils.random(10, 20);
             this.velX = MathUtils.cos(angle) * speed;
             this.velY = MathUtils.sin(angle) * speed;
             this.accumulatorX = 0;
@@ -78,7 +78,7 @@ public class Explosion {
         int baseY = centerY * 8 + 4;
         for(Particle particle:particles){
             painter.setColor(particle.color);
-            painter.rect(baseX + particle.getX(), baseY + particle.getY(), 1, 1);
+            painter.rect(baseX + particle.getX(), baseY + particle.getY(), 2, 2);
         }
     }
 }

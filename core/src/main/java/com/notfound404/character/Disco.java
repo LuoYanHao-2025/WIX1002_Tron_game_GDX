@@ -20,7 +20,7 @@ class Disco extends Mobile {
     private Color color;
 
     Disco(Bike master, int x, int y) {
-        super(x, y, 5);
+        super(master.getX(), master.getY(), 5);
         arena = master.arena;
         masterBike = master;
         float vx = x-this.x;

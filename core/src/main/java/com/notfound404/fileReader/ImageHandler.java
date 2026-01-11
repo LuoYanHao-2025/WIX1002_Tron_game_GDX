@@ -6,7 +6,6 @@ import com.notfound404.arena.GameArena;
 import com.notfound404.character.Bike;
 import com.notfound404.character.Disco;
 import com.notfound404.arena.GameArena.Direction;
-import java.io.FileInputStream;
 import java.util.Scanner;
 
 public class ImageHandler {
