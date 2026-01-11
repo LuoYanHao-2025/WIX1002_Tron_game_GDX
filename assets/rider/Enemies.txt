@@ -1,0 +1,4 @@
+Clu,4,Gold,1000
+Rinzler,3,Red,500
+Sark,2,Yellow,100
+Koura,1,Green,10

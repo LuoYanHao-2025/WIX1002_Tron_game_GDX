@@ -48,7 +48,7 @@ public class Enemy extends Bike {
         this.maxLP = (int)(10 * multiplier);
         this.lp = maxLP;
         this.speed = (int)(3.0 * multiplier);
-        this.discoRange = 5 + (level / 2);
+        this.discoRange = 30 + (level / 2);
         this.discoMAX = 2; // 敌人默认飞盘上限
         this.discoSlots = 2;
     }

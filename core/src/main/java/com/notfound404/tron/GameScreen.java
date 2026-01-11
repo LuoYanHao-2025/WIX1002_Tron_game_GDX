@@ -34,9 +34,9 @@ public class GameScreen implements Screen {
 
         arena = new GameArena();
         touchPos = new Vector3();
-        painter = new ImageHandler(arena, game.shapeRenderer);
+        painter = new ImageHandler(game.shapeRenderer);
 
-        //Intialize map
+        //Initialize map
         loadMap();
     }
 

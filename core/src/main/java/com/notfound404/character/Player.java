@@ -7,7 +7,7 @@ import com.notfound404.arena.GameArena;
 import com.badlogic.gdx.graphics.Color;
 
 public class Player extends Bike {
-    public final String playerType;//"Tron" or "Kelvin"
+    public final String playerType;//"Tron" or "Kevin"
     protected final String playerID;//Enter by player, used for RANKING system
 
     private PlayerLevelSystem levelSystem; // 玩家的升级系统
@@ -31,7 +31,7 @@ public class Player extends Bike {
         this.discoSlots = this.discoMAX =  3;
         this.discoRange = 5;
 
-        this.dir = GameArena.Direction.UP;
+        this.dir = GameArena.Direction.LEFT;
         this.accumulator = 0;
 
         this.levelSystem = new PlayerLevelSystem();
@@ -57,7 +57,6 @@ public class Player extends Bike {
                     this.speed = 5;
                     break;
                 case "kevin":
-                case "kelvin": // 容错处理
                     // Kevin: 高速度型角色
                     this.lp = this.maxLP = 3;
                     this.speed = 8;

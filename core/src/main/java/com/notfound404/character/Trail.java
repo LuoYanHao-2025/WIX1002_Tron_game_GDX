@@ -58,7 +58,7 @@ public class Trail {
 
         //The former state of the box is bike -- draw. Or the trail unit should be left empty.
         int value = arena.getCellValue(x, y);
-        if(value==2||value == 6)
+        if(value!=4 && value != -1)
             arena.setCellValue(x, y,IDNUM);
 
         while(length > maxTrailLength){

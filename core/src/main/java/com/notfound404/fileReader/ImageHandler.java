@@ -2,7 +2,6 @@ package com.notfound404.fileReader;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.notfound404.arena.GameArena;
 import com.notfound404.character.Bike;
 import com.notfound404.character.Disco;
 import com.notfound404.arena.GameArena.Direction;
@@ -28,11 +27,9 @@ public class ImageHandler {
      * 轨道单元同理
      */
 
-    private GameArena arena;
     private ShapeRenderer shaper;
 
-    public ImageHandler(GameArena arena, ShapeRenderer shapeRdr){
-        this.arena = arena;
+    public ImageHandler(ShapeRenderer shapeRdr){
         this.shaper = shapeRdr;
         bikeShape = bikeShapeReader("bike.txt");
         discoShape = discoShapeReader("disco.txt");

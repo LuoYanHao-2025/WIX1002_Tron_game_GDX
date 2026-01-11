@@ -19,6 +19,8 @@ public class MapLoader {
     //Same as Arena 40 * 40
     private final int FILE_ROWS = 40;
     private final int FILE_COLS = 40;
+    private final int BORDER_WIDTH = 2;
+    private final int FINAL_SIZE = 44;
 
     public void loadMap(GameArena arena, String mapName) {
         //Random Map Mode
@@ -57,7 +59,7 @@ public class MapLoader {
             }
         }
         
-        // 4. Initialize the border lists
+        // Initialize the lists
         arena.scanAndInitLists();
     }
     
@@ -92,7 +94,7 @@ public class MapLoader {
             while ((line = reader.readLine()) != null && row < FILE_ROWS) {
                 String[] values = line.trim().split("[,\\s]+");
                 for (int col = 0; col < values.length && col < 44; col++) {
-                    arena.setCellValue(col, row, Integer.parseInt(values[col]));
+                    arena.setCellValue(col+2, row+2, Integer.parseInt(values[col]));
                 }
                 row++;
             }
@@ -102,5 +104,8 @@ public class MapLoader {
             //Emergency: Do it Randomly
             loadRandomMap(arena);
         }
+
+        // 4. Initialize the border lists
+        arena.scanAndInitLists();
     }
 }
