@@ -35,7 +35,8 @@ public class PlayerLevelSystem extends BaseLevelSystem {
             player.setDiscoRange(player.getDiscoRange() + 1);
         }
     }
-    
+    }
+
     /**
      * 直接修改Player实体类中的属性字段
      */
@@ -61,12 +62,9 @@ public class PlayerLevelSystem extends BaseLevelSystem {
     }
     
     // --- 飞盘射击逻辑判断接口 ---
-    public boolean canShootDisc(int currentDiscs) { return currentDiscs >= discsPerShot; }
-    public int consumeDiscsForShot() { return discsPerShot; }
+    public boolean canShootDisc(int currentDiscs) { return currentDiscs >= 1; }
+    public int consumeDiscsForShot() { return 1; }
 
     // --- Getter 供 Player 实体调用 ---
-    public int getBounceCount() { return bounceCount; }
-    public int getMaxDiscs() { return maxDiscs; }
-    public int getProjectileCount() { return projectileCount; }
-    public int getDiscsPerShot() { return discsPerShot; }
+    public int getDiscsPerShot() { return 1; }
 }
