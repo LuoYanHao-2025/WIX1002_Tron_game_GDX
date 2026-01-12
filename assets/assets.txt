@@ -5,5 +5,4 @@ map/Accelerate Territory.txt
 map/Death Canyon.txt
 map/Mirror Battery.txt
 rider/Enemies.txt
-rider/Kevin.txt
-rider/Tron.txt
+rider/Players.txt

@@ -46,7 +46,7 @@ public class GameScreen implements Screen {
         loader.loadMap(arena, mapName);
         
         // Initialize Players/Enemies after map is loaded
-        arena.initPlayerAndEnemies();
+        arena.initPlayerAndEnemies("Tron");
     }
 
     @Override

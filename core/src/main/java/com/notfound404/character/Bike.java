@@ -22,15 +22,16 @@ public abstract class Bike extends Mobile{
     protected float maxLP;
     protected int exp;//For enemy bikes, exp awarded when destroyed; for player bike, current exp
     protected int level;
-    protected boolean hasAccelerator;
-    protected boolean isIneffective;
+    protected float hasAcceleratorTime;
+    protected static final float COEFFICIENT_ACC=1.8f; 
+    protected int ineffectiveUnits;
     protected int discoSlots;
     protected int discoMAX;
     
 
     //Constants for bike behavior
     //战车行为常量
-    protected final static int ACCELERATOR_DURATION = 3; //Duration of accelerator effect in seconds
+    protected final static int ACCELERATOR_DURATION = 2; //Duration of accelerator effect in seconds
     protected final static int INEFFECTIVE_DURATION = 3; //Duration of disco/trail collision effects in distance units
 
     //Attack properties
@@ -46,8 +47,8 @@ public abstract class Bike extends Mobile{
         this.color = color;
         this.dir = GameArena.Direction.LEFT;
         this.trailLength = 50;
-        this.hasAccelerator = false;
-        this.isIneffective = false;
+        this.hasAcceleratorTime = 0f;
+        this.ineffectiveUnits = 0;
         this.discoSlots = this.discoMAX = 3;
         this.discoRange = 30;
         this.bikeTrail = new Trail(this);
@@ -77,6 +78,17 @@ public abstract class Bike extends Mobile{
         }
     }
 
+    @Override
+    public void update(float deltaTime){
+        if(!isActive)
+            return;
+        hasAcceleratorTime -=deltaTime;
+        accumulator += hasAcceleratorTime>0 ? deltaTime * speed * COEFFICIENT_ACC : deltaTime * speed;
+        for(;accumulator >= 1;accumulator--){
+            moveOneStep();
+        }
+    }
+
     protected void moveOneStep() {
         bikeTrail.oneMove();
         switch (dir) {
@@ -93,15 +105,16 @@ public abstract class Bike extends Mobile{
                 x += 1;
                 break;
         }
+        if(ineffectiveUnits>0){ ineffectiveUnits-=1; }
         //Collisions
         switch(arena.getCellValue(x, y)){
             case 0: //Empty cell
                 markSelf();
                 break;
             case 1: //Trail cell
-                if (!isIneffective) {
+                if (ineffectiveUnits<=0) {
                     lp -= 0.5f;
-                    isIneffective = true;
+                    ineffectiveUnits = INEFFECTIVE_DURATION;
                 }
                 arena.addExplosion(x, y);
                 markSelf();
@@ -111,7 +124,7 @@ public abstract class Bike extends Mobile{
                 arena.addExplosion(x, y);
                 break;
             case 3: //Accelerator cell
-                hasAccelerator = true;
+                hasAcceleratorTime = ACCELERATOR_DURATION;
                 markSelf();
                 break;
             case 4: //Wall cell

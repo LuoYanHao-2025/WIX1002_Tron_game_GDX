@@ -62,8 +62,10 @@ public class GameArena {
     private ArrayList<Explosion> explosions;
     private ArrayList<Disco> discos;
     private ArrayList<Trail> trails;
-    private Bike playerBike;
+    private Player playerBike;
 
+
+    //This is for player: Disco shooting span
     private final static int SHOOTSPAN = 3; //The span required between 2 times we check disco shoot. (unit: second)
     private float shootTimer;
 
@@ -86,21 +88,9 @@ public class GameArena {
 
         clearMap();
 
-        //CUT
-        //Create the first bike: Player
-        //创建第一个玩家，类一定有玩家，固定列表第一个是玩家
-        bikes.add(new Player("Tron","Tester", ARENA_SIZE/2, ARENA_SIZE/3, this));
-
-        //正式版创建玩家也用其他方法：玩家文件在选择界面已经读取，这里调用读取类返回的参数即可
-        //测试版：创建一个敌人
-        //正式版用专门的随机方法来创建敌人
-        bikes.add(new Enemy(this, ARENA_SIZE/2, 2*ARENA_SIZE/3, Color.RED, 1));
-
-        playerBike = bikes.get(0);
         shootTimer = 0f;
 
         isGameOver = false;
-        //CUT
     }
 
     public void setBorderType(char type){
@@ -327,12 +317,13 @@ public class GameArena {
     }
 
     //Initialization Method
-    public void initPlayerAndEnemies() {
+    public void initPlayerAndEnemies(String heroType) {
         // Reset lists
         bikes.clear();
         
         // Add Player
-        Player p = new Player("Tron", "Tester", ARENA_SIZE/2, ARENA_SIZE/3, this);
+        GridPoint2 safeCoordinate = getSafePosition();
+        Player p = new Player(heroType, safeCoordinate.x, safeCoordinate.y, this);
         addBike(p);
         playerBike = p;
 
@@ -342,7 +333,17 @@ public class GameArena {
 
     //Randomly Generate an enemy
     public void addNewEnemy(){
-        
+        /**这里先get玩家等级
+         * 根据玩家等级计算最大敌人数
+         * 如果达到最大敌人，return
+         * 如果没达到，计算敌人难度概率
+         * 难度为1~4， 1最弱 4 最强是BOSS
+         * 只有99级的时候才会出现BOSS
+         * BOSS只会出现一次，因此用一个boolean变量控制
+         * 
+         * 然后根据概率随机出敌人
+         * 用 addBike(new Enemy(...)) 加入BikeList
+         */
     }
 
     //Get a random safe position

@@ -4,21 +4,54 @@ package com.notfound404.character;
 import com.notfound404.levelsystem.PlayerLevelSystem;
 //.....
 import com.notfound404.arena.GameArena;
+
+import java.io.File;
+import java.io.FileInputStream;
+
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+
+import java.util.Scanner;
 
 public class Player extends Bike {
     public final String playerType;//"Tron" or "Kevin"
-    protected final String playerID;//Enter by player, used for RANKING system
+    protected String playerID;//Enter by player, used for RANKING system
 
     private PlayerLevelSystem levelSystem; // 玩家的升级系统
 
-    //The constructor should later be modified as IO
-    //这里之后改成文件读取
+    private static String[] heroName;
+    private static int[][] heroProperty;
 
-    public Player(String playerType, String playerID, int startX, int startY, GameArena arena) {
+    //Read the players' info when first time we create a Player Object
+    static{
+        File heroInfo = Gdx.files.internal("rider/Players.txt").file();
+
+        if (!heroInfo.exists()) {
+            System.err.println("MapLoader Error: File not found " + heroInfo.getAbsolutePath());
+            System.exit(0);
+        }
+
+        try(Scanner scanner = new Scanner(new FileInputStream(heroInfo))){
+            heroName = new String[2];
+            heroProperty = new int[2][2];
+            for(int i = 0;i < 2 ;i++){
+                String[] heroLine = scanner.nextLine().split(",");
+                heroName[i] = heroLine[0];
+                heroProperty[i][0] = Integer.parseInt(heroLine[1]);
+                heroProperty[i][1] = Integer.parseInt(heroLine[2]);
+            }
+        }catch(Exception e){
+            System.out.println("File Input Exception.");
+            e.printStackTrace();
+            System.exit(0);
+        }
+
+    }
+
+    public Player(String playerType, int startX, int startY, GameArena arena) {
         super(arena, startX, startY, 2, Color.CYAN);
         this.playerType = playerType;
-        this.playerID = playerID;
+        this.playerID = "John Doe";
 
         // 1. 设置初始等级和经验 (使用从 Bike 继承的变量)
         this.level = 1;
@@ -50,23 +83,17 @@ public class Player extends Bike {
      */
     private void initializeStatsByPlayerType() {
         if (playerType != null) {
-            switch (playerType.toLowerCase()) {
-                case "tron":
-                    // Tron: 平衡型角色
-                    this.lp = this.maxLP = 5;
-                    this.speed = 5;
-                    break;
-                case "kevin":
-                    // Kevin: 高速度型角色
-                    this.lp = this.maxLP = 3;
-                    this.speed = 8;
-                    break;
-                default:
-                    // 默认值
-                    this.lp = this.maxLP = 5;
-                    this.speed = 5;
+            for(int i = 0;i<heroName.length ;i++){
+                if(playerType.equalsIgnoreCase(heroName[i])){
+                    this.maxLP = this.lp = heroProperty[i][0];
+                    this.speed = heroProperty[i][1];
+                    return;
+                }
             }
         }
+        //Default Value
+        this.maxLP = this.lp = 5;
+        this.speed = 5;
     }
 
     // ==========================================================
