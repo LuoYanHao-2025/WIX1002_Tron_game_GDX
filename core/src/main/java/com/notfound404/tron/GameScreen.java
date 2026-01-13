@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.notfound404.arena.GameArena;
 import com.notfound404.arena.GameArena.Direction;
+import com.notfound404.character.Player;
 import com.notfound404.fileReader.ImageHandler;
 import com.notfound404.fileReader.MapLoader;
 
@@ -105,11 +106,70 @@ public class GameScreen implements Screen {
 
         game.shapeRenderer.end();
 
+        drawUI();
+
         //Maybe something else will be drawn here
         //Like the text messages
         //Life point display...
     }
 
+    private void drawUI() {
+    Player player = arena.getPlayerBike();
+    if (player == null) return;
+
+    float screenWidth = game.viewport.getWorldWidth();
+    float padding = 20f;
+    float uiBottomOffset = 15f; // UI 距离底部的基础偏移
+    float barWidth = screenWidth - (padding * 2);
+    float barHeight = 10f;
+
+    // --- 使用 ShapeRenderer 绘制条状图 ---
+    game.shapeRenderer.begin(ShapeType.Filled);
+    
+    // 1. 经验条 (XP Bar) - 位于最下方
+    // 背景
+    game.shapeRenderer.setColor(new Color(0.1f, 0.1f, 0.1f, 1f)); // 深灰背景
+    game.shapeRenderer.rect(padding, uiBottomOffset, barWidth, barHeight);
+    // 进度 (青色)
+    game.shapeRenderer.setColor(new Color(0f, 0.85f, 1f, 1f));
+    float xpProgress = (float) (player.getCurrentXP() / player.getXPCap());
+    game.shapeRenderer.rect(padding, uiBottomOffset, barWidth * Math.min(xpProgress, 1.0f), barHeight);
+
+    // 2. 生命值条 (LP Bar) - 位于经验条上方
+    float lpBarY = uiBottomOffset + barHeight + 5f; // 间隔5像素
+    // 背景
+    game.shapeRenderer.setColor(new Color(0.2f, 0f, 0f, 1f)); // 深红背景
+    game.shapeRenderer.rect(padding, lpBarY, barWidth, barHeight);
+    // 进度 (亮红色)
+    game.shapeRenderer.setColor(new Color(1f, 0.2f, 0.2f, 1f));
+    float lpProgress = player.getLP() / player.getMaxLP();
+    game.shapeRenderer.rect(padding, lpBarY, barWidth * Math.max(0, Math.min(lpProgress, 1.0f)), barHeight);
+    
+    game.shapeRenderer.end();
+
+    // --- 使用 Batch 绘制文字标签 ---
+    game.batch.setProjectionMatrix(game.viewport.getCamera().combined);
+    game.batch.begin();
+    
+    game.font.setColor(Color.WHITE);
+    // 调整字体缩放，让UI文字稍微小一点更精致 (可选)
+    // game.font.getData().setScale(0.8f);
+
+    float textY = lpBarY + barHeight + 25f; // 文字在血条上方
+
+    // 左侧：等级
+    game.font.draw(game.batch, "LV: " + player.getPlayerLevel(), padding, textY);
+    
+    // 中间：血量数值
+    String lpText = "HP: " + (int)player.getLP() + " / " + (int)player.getMaxLP();
+    game.font.draw(game.batch, lpText, screenWidth / 2f - 45, textY);
+    
+    // 右侧：经验百分比
+    String xpText = String.format("XP: %.1f%%", xpProgress * 100);
+    game.font.draw(game.batch, xpText, screenWidth - padding - 70, textY);
+
+    game.batch.end();
+}
 
 
     @Override
