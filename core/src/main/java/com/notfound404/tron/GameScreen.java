@@ -42,6 +42,7 @@ public class GameScreen implements Screen {
     private String mapName;
     private String heroType;
     private boolean hasPrompt;
+    private boolean overHandling = false;
     Vector2 touchPos;//Mouse position
 
     GameScreen(Main game, String mapName, String heroType) {
@@ -82,6 +83,11 @@ public class GameScreen implements Screen {
     @Override
     public void render(float delta) {
         // Draw your screen here. "delta" is the time since last render in seconds.
+        //If we are in the handling process draw only, no logic processing.
+        if(overHandling){
+            drawGameScene();
+            return;
+        }
         if (storyManager.isActive()) {
             if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
                 storyManager.next();
@@ -93,54 +99,51 @@ public class GameScreen implements Screen {
         // 2. 逻辑更新：剧情模式下暂停游戏逻辑
         if (!storyManager.isActive()) {
             if (arena.gameOver()||arena.userWin()) {
-                //Display the prompt for only one time
-                //Avoid give out a number of prompts in seconds and result in crashing.
-                if(!hasPrompt){
-                    hasPrompt = true;
-                    handleGameOver();//Game is over here
-                }else{
-                    ScreenUtils.clear(Color.BLACK);
-                    game.viewport.apply();
-                    draw();
-                    return;
-                }
+                //Handle the over of our game
+                handleGameOver();
             } else {
                 logic(delta); // Continue performing logic
+                //Check again after logic performed
+                checkStoryEvents();
             } 
-            // 在 logic 之外单独检测剧情触发点
-            checkStoryEvents(); 
+             
         }
 
-        // --- 修复核心：确保 Viewport 应用并清除屏幕 ---
-        ScreenUtils.clear(Color.BLACK);
-        game.viewport.apply(); // 确保视口正确应用
-        draw(); 
-        
-        if (storyManager.isActive()) {
-        // 重置 Batch 和 ShapeRenderer 的矩阵，确保它们对齐当前视口坐标
-        game.batch.setProjectionMatrix(game.viewport.getCamera().combined);
-        game.shapeRenderer.setProjectionMatrix(game.viewport.getCamera().combined);
-        renderStoryUI(); 
-    }
+        drawGameScene(); 
     }
 
     // 4. 检查剧情触发 (根据玩家等级)
     private void checkStoryEvents() {
         int currentLevel = arena.getPlayerBike().getPlayerLevel();
     
-    if (currentLevel != lastStoryLevel) {
-        // 每当等级提升，判断是否符合特定的对话触发点
-        if (currentLevel == 20 || currentLevel == 40 || currentLevel == 60 || currentLevel == 80) {
-            storyManager.trigger("REINFORCE");
-        } else if (currentLevel == 10 || currentLevel == 41 || currentLevel == 71) {
-            // 对应你 addNewEnemy 里的难度跳跃点
-            storyManager.trigger("STRONGER");
-        } else if (currentLevel == 99) {
-            storyManager.trigger("FINAL");
+        if (currentLevel != lastStoryLevel) {
+            // 每当等级提升，判断是否符合特定的对话触发点
+            if (currentLevel == 20 || currentLevel == 40 || currentLevel == 60 || currentLevel == 80) {
+                storyManager.trigger("REINFORCE");
+            } else if (currentLevel == 10 || currentLevel == 41 || currentLevel == 71) {
+                // 对应你 addNewEnemy 里的难度跳跃点
+                storyManager.trigger("STRONGER");
+            } else if (currentLevel == 99) {
+                storyManager.trigger("FINAL");
+            }
+            lastStoryLevel = currentLevel;
         }
-        lastStoryLevel = currentLevel;
     }
-}
+
+    //Seal the game scene drawing process
+    private void drawGameScene(){
+        ScreenUtils.clear(Color.BLACK);
+            game.viewport.apply(); 
+
+            game.batch.setProjectionMatrix(game.viewport.getCamera().combined);
+            game.shapeRenderer.setProjectionMatrix(game.viewport.getCamera().combined);
+
+            draw(); 
+            
+            if (storyManager.isActive()) {
+                renderStoryUI(); 
+            }
+    }
 
     // 5. 渲染剧情 UI
 private void renderStoryUI() {
@@ -240,11 +243,11 @@ private void renderStoryUI() {
     }
 
     private void handleGameOver(){
+        overHandling = true;
         NameInputListener listener = new NameInputListener(game, arena.getPlayerBike(), mapName);
 
         // A prompt displayed
         Gdx.input.getTextInput(listener, "MISSION ACCOMPLISHED", "User", "Enter ID");
-        game.setScreen(null);
     }
 
     private void drawUI() {
@@ -290,7 +293,6 @@ private void renderStoryUI() {
     
     
     float currentY = UI_START_Y;
-    float currentX = UI_START_X;
     game.font.setColor(Color.CYAN);
     game.font.draw(game.batch,heroType,UI_START_X,currentY);
 

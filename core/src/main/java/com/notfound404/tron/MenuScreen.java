@@ -43,11 +43,19 @@ public class MenuScreen implements Screen {
         // Clear screen
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        //Viewport Setting
+        game.viewport.apply();
+
+        //Fix our painters to the coordinates of camera
+        //绑定画图工具的坐标到相机坐标系
+        game.batch.setProjectionMatrix(game.viewport.getCamera().combined);
+        game.shapeRenderer.setProjectionMatrix(game.viewport.getCamera().combined);
         
         // Update timers
         glowTimer += delta;
         scanLineY += delta * 50f;
-        if (scanLineY > Gdx.graphics.getHeight()) {
+        if (scanLineY > game.viewport.getWorldHeight()) {
             scanLineY = -10f;
         }
         
@@ -100,36 +108,41 @@ public class MenuScreen implements Screen {
         
         // Draw grid
         int gridSize = 50;
-        for (int x = 0; x < Gdx.graphics.getWidth(); x += gridSize) {
-            game.shapeRenderer.line(x, 0, x, Gdx.graphics.getHeight());
+        for (int x = 0; x < game.viewport.getWorldWidth(); x += gridSize) {
+            game.shapeRenderer.line(x, 0, x, game.viewport.getWorldHeight());
         }
-        for (int y = 0; y < Gdx.graphics.getHeight(); y += gridSize) {
-            game.shapeRenderer.line(0, y, Gdx.graphics.getWidth(), y);
+        for (int y = 0; y < game.viewport.getWorldHeight(); y += gridSize) {
+            game.shapeRenderer.line(0, y, game.viewport.getWorldWidth(), y);
         }
         
         game.shapeRenderer.end();
     }
     
     private void drawTitle() {
-        float centerX = Gdx.graphics.getWidth() / 2f;
-        float titleY = Gdx.graphics.getHeight() - 150f;
+        float viewportW = game.viewport.getWorldWidth();
+        float viewportH = game.viewport.getWorldHeight();
+
+        float centerX = viewportW / 2f;
+        float titleY = viewportH - 55f;
         
         game.batch.begin();
         
-        // Title "SYSTEM"
+        // Title "Tron"
         BitmapFont font = game.font; // Assume you have a large font
-        GlyphLayout layout = new GlyphLayout(font, "SYSTEM");
+        GlyphLayout layout = new GlyphLayout(font, "TRON");
         
         // Draw glow effect
         float glowAlpha = 0.5f + 0.3f * MathUtils.sin(glowTimer * 2f);
         font.setColor(CYAN_GLOW.r, CYAN_GLOW.g, CYAN_GLOW.b, glowAlpha);
-        font.draw(game.batch, "SYSTEM", centerX - layout.width / 2, titleY);
+        font.getData().setScale(3f);
+        font.draw(game.batch, "TRON", centerX - layout.width * 3 / 2, titleY);
+        font.getData().setScale(1f);
         
         // Subtitle
         font.setColor(CYAN_GLOW.r, CYAN_GLOW.g, CYAN_GLOW.b, 0.7f);
-        GlyphLayout subtitleLayout = new GlyphLayout(font, "INITIALIZE");
+        GlyphLayout subtitleLayout = new GlyphLayout(font, "Legacy");
         font.getData().setScale(0.5f);
-        font.draw(game.batch, "INITIALIZE", centerX - subtitleLayout.width / 4, titleY - 50);
+        font.draw(game.batch, "Legacy", centerX - subtitleLayout.width / 4 + 12, titleY - 35);
         font.getData().setScale(1f);
         
         game.batch.end();
@@ -137,14 +150,15 @@ public class MenuScreen implements Screen {
         // Draw decorative lines
         game.shapeRenderer.begin(ShapeType.Filled);
         game.shapeRenderer.setColor(CYAN_GLOW);
-        game.shapeRenderer.rectLine(centerX - 200, titleY - 80, centerX + 200, titleY - 80, 1);
+        game.shapeRenderer.rectLine(centerX - 200, titleY - 60, centerX + 200, titleY - 60, 1);
         game.shapeRenderer.end();
     }
     
     private void drawMenu() {
-        float centerX = Gdx.graphics.getWidth() / 2f;
-        float startY = Gdx.graphics.getHeight() / 2f + 50f;
-        float itemHeight = 60f;
+        float centerX = game.viewport.getWorldWidth() / 2f;
+        float itemHeight = 50f;
+        float totalMenuHeight = menuItems.length * itemHeight;
+        float startY = game.viewport.getWorldHeight() / 2f + (totalMenuHeight / 2f) - 65f;
         
         game.batch.begin();
         
@@ -183,46 +197,47 @@ public class MenuScreen implements Screen {
     private void drawScanLine() {
         game.shapeRenderer.begin(ShapeType.Filled);
         game.shapeRenderer.setColor(CYAN_GLOW.r, CYAN_GLOW.g, CYAN_GLOW.b, 0.1f);
-        game.shapeRenderer.rect(0, scanLineY, Gdx.graphics.getWidth(), 10);
+        game.shapeRenderer.rect(0, scanLineY, game.viewport.getWorldWidth(), 10);
         game.shapeRenderer.end();
     }
     
     private void drawCornerDecorations() {
         int cornerSize = 100;
-        int cornerThickness = 2;
+        float w = game.viewport.getWorldWidth();
+        float h = game.viewport.getWorldHeight();
         
         game.shapeRenderer.begin(ShapeType.Line);
         game.shapeRenderer.setColor(CYAN_GLOW);
         
         // Top-left
-        game.shapeRenderer.line(20, Gdx.graphics.getHeight() - 20, 20 + cornerSize, Gdx.graphics.getHeight() - 20);
-        game.shapeRenderer.line(20, Gdx.graphics.getHeight() - 20, 20, Gdx.graphics.getHeight() - 20 - cornerSize);
+        game.shapeRenderer.line(20, h - 20, 20 + cornerSize, h - 20);
+        game.shapeRenderer.line(20, w - 20, 20, h - 20 - cornerSize);
         
         // Top-right
-        game.shapeRenderer.line(Gdx.graphics.getWidth() - 20, Gdx.graphics.getHeight() - 20, 
-                               Gdx.graphics.getWidth() - 20 - cornerSize, Gdx.graphics.getHeight() - 20);
-        game.shapeRenderer.line(Gdx.graphics.getWidth() - 20, Gdx.graphics.getHeight() - 20,
-                               Gdx.graphics.getWidth() - 20, Gdx.graphics.getHeight() - 20 - cornerSize);
+        game.shapeRenderer.line(w - 20, h - 20, 
+                               w - 20 - cornerSize, h - 20);
+        game.shapeRenderer.line(w - 20, h - 20,
+                               w - 20, h - 20 - cornerSize);
         
         // Bottom-left
         game.shapeRenderer.line(20, 20, 20 + cornerSize, 20);
         game.shapeRenderer.line(20, 20, 20, 20 + cornerSize);
         
         // Bottom-right
-        game.shapeRenderer.line(Gdx.graphics.getWidth() - 20, 20,
-                               Gdx.graphics.getWidth() - 20 - cornerSize, 20);
-        game.shapeRenderer.line(Gdx.graphics.getWidth() - 20, 20,
-                               Gdx.graphics.getWidth() - 20, 20 + cornerSize);
+        game.shapeRenderer.line(w - 20, 20,
+                               w - 20 - cornerSize, 20);
+        game.shapeRenderer.line(w - 20, 20,
+                               w - 20, 20 + cornerSize);
         
         game.shapeRenderer.end();
         
         // Corner dots
         game.shapeRenderer.begin(ShapeType.Filled);
         game.shapeRenderer.setColor(CYAN_GLOW);
-        game.shapeRenderer.circle(20, Gdx.graphics.getHeight() - 20, 3);
-        game.shapeRenderer.circle(Gdx.graphics.getWidth() - 20, Gdx.graphics.getHeight() - 20, 3);
+        game.shapeRenderer.circle(20, h - 20, 3);
+        game.shapeRenderer.circle(w - 20, h - 20, 3);
         game.shapeRenderer.circle(20, 20, 3);
-        game.shapeRenderer.circle(Gdx.graphics.getWidth() - 20, 20, 3);
+        game.shapeRenderer.circle(w - 20, 20, 3);
         game.shapeRenderer.end();
     }
     

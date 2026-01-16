@@ -24,6 +24,9 @@ public class LeaderBoard implements Screen{
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        game.viewport.apply();
+        game.batch.setProjectionMatrix(game.viewport.getCamera().combined);
+
         game.batch.begin();
         game.font.setColor(Color.YELLOW);
         game.font.draw(game.batch, "TOP AGENTS", 200, 350);
