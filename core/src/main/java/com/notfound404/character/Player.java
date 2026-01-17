@@ -5,9 +5,6 @@ import com.notfound404.levelsystem.PlayerLevelSystem;
 //.....
 import com.notfound404.arena.GameArena;
 
-import java.io.File;
-import java.io.FileInputStream;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 

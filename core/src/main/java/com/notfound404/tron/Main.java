@@ -1,7 +1,6 @@
 package com.notfound404.tron;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -23,7 +22,6 @@ public class Main extends Game {
         batch = new SpriteBatch();
 
         font.setUseIntegerPositions(false);
-        font.getData().setScale(viewport.getWorldHeight()/Gdx.graphics.getHeight());
 
         // Set the first screen
         //this.setScreen(new FirstScreen(this));

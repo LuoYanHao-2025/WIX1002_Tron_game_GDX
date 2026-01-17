@@ -72,6 +72,32 @@ public class GameScreen implements Screen, InputProcessor {
         storyManager.trigger("START");
     }
 
+    //This constructor is for Loaded record: level and score are set at the beginning.
+    //这个是给读取存档构建新游戏而准备的构造器
+    GameScreen(Main game, String mapName, String heroType, int level, int score) {
+        this.game = game;
+        this.mapName = mapName;
+        this.heroType = heroType;
+
+        //Initialization Objects declared above
+        //接下来初始化上面声明的对象，加载文件就在这里，可以写一些method或者class来增强可读性
+        discoTexture = new Texture("./image/disco.png");
+        fullLPTexture = new Texture("./image/fullHeart.png");
+        halfLPTexture = new Texture("./image/halfHeart.png");
+
+        arena = new GameArena();
+        touchPos = new Vector2();
+        painter = new ImageHandler(game.shapeRenderer);
+
+        /**这里或者后续需要加入初始化玩家经验和等级的操作
+         * 需要同步经验到经验系统
+         */
+
+        //Initialize map
+        loadMap();
+        storyManager.trigger("START");
+    }
+
     //Load the map into Arena 
     private void loadMap(){
         MapLoader loader = new MapLoader();

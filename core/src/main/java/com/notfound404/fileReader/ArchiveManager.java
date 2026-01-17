@@ -123,14 +123,17 @@ public class ArchiveManager {
     //存档读取
     //Read an Archive with a given player ID
     public static ArchiveEntry getArchive(String playerID){
-        ArrayList<ArchiveEntry> scores = new ArrayList<>();
+        if(playerID==null||playerID.length()==0)
+            return null;
+        ArrayList<ArchiveEntry> records = new ArrayList<>();
         try (Scanner scanner = new Scanner(Gdx.files.internal(ARCHIVE_FILE).reader())) {
             while(scanner.hasNextLine()){
                 String[] line = scanner.nextLine().split(",");
                 try {
-                    scores.add(new ArchiveEntry(line[0], line[1],line[2],Integer.parseInt(line[3]),Integer.parseInt(line[4])));
+                    records.add(new ArchiveEntry(line[0], line[1],line[2],Integer.parseInt(line[3]),Integer.parseInt(line[4])));
                 } catch (NumberFormatException e) {
                     // if there is an error, ignore it and go on.
+                    //We will return a null.
                 }
             }
         } catch (Exception e) {
@@ -138,7 +141,7 @@ public class ArchiveManager {
             e.printStackTrace();
             System.exit(0);
         }
-        for(ArchiveEntry data : scores){
+        for(ArchiveEntry data : records){
             if(data.playerID.equals(playerID))
                 return data;
         }

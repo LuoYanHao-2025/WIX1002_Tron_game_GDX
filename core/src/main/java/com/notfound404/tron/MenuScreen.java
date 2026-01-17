@@ -1,6 +1,8 @@
 package com.notfound404.tron;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -8,8 +10,10 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
+import com.notfound404.fileReader.ArchiveManager;
+import com.notfound404.fileReader.ArchiveManager.ArchiveEntry;
 
-public class MenuScreen implements Screen {
+public class MenuScreen implements Screen, InputProcessor {
     
     private final Main game;
     private final String[] menuItems = {
@@ -23,6 +27,10 @@ public class MenuScreen implements Screen {
     private int selectedIndex = 0;
     private float glowTimer = 0f;
     private float scanLineY = 0f;
+    private String playerIDInput= "";
+    private boolean isLoading = false;
+    private final int NOT_FOUND_SHOW = 2;
+    private float notFoundTimer = 0f;
     
     // TRON Colors
     private final Color CYAN_GLOW = new Color(0f, 0.85f, 1f, 1f);
@@ -60,24 +68,37 @@ public class MenuScreen implements Screen {
         }
         
         // Handle input
-        handleInput();
+        if(notFoundTimer<=0 && !isLoading)
+            handleInput();
         
+        //draw
+        draw(delta);
+        
+    }
+
+    private void draw(float delta){
         // Draw
         drawBackground();
         drawTitle();
         drawMenu();
         drawScanLine();
         drawCornerDecorations();
+        if(isLoading)
+            drawPrompt();
+        if(notFoundTimer>0){
+            notFoundTimer -= delta;
+            displayErrorMsg();
+        }
     }
     
     private void handleInput() {
-        if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.UP)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
             selectedIndex = (selectedIndex - 1 + menuItems.length) % menuItems.length;
         }
-        if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.DOWN)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
             selectedIndex = (selectedIndex + 1) % menuItems.length;
         }
-        if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.ENTER)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
             selectMenuItem();
         }
     }
@@ -88,7 +109,8 @@ public class MenuScreen implements Screen {
                 game.setScreen(new PlayerSelectionScreen(game));
                 break;
             case 1: // LOAD SYSTEM
-                // TODO
+                isLoading = true;
+                Gdx.input.setInputProcessor(this);
                 break;
             case 2: // OPTIONS
                 // TODO
@@ -240,6 +262,43 @@ public class MenuScreen implements Screen {
         game.shapeRenderer.circle(w - 20, 20, 3);
         game.shapeRenderer.end();
     }
+
+    private void drawPrompt(){
+        //Veil to dim the menu
+        Gdx.gl.glEnable(GL20.GL_BLEND);
+        game.shapeRenderer.begin(ShapeType.Filled);
+        game.shapeRenderer.setColor(0, 0, 0, 0.7f);
+        game.shapeRenderer.rect(0, 0, game.viewport.getWorldWidth(), game.viewport.getWorldHeight());
+        game.shapeRenderer.end();
+        Gdx.gl.glDisable(GL20.GL_BLEND);
+
+        //prompt
+        float promptX = game.viewport.getWorldWidth()/2f;
+        float promptY = game.viewport.getWorldHeight()/2f + 45f;
+        game.batch.begin();
+        game.font.setColor(Color.YELLOW);
+        GlyphLayout layout = new GlyphLayout(game.font, "Archive Info (Case Sensitive)");
+        game.font.draw(game.batch, "Archive Info (Case Sensitive)", promptX - layout.width/2, promptY);
+        promptY -= 50;
+        game.font.setColor(Color.WHITE);
+        layout = new GlyphLayout(game.font, "Enter Name: " + playerIDInput + "_");
+        game.font.draw(game.batch, "Enter Name: " + playerIDInput + "_", promptX - layout.width/2, promptY);
+        promptY -= 50;
+        game.font.setColor(Color.GRAY);
+        layout = new GlyphLayout(game.font, "[Press ENTER]");
+        game.font.draw(game.batch, "[Press ENTER]", promptX - layout.width/2, promptY);
+        game.batch.end();
+    }
+
+    private void displayErrorMsg(){
+        game.batch.begin();
+        game.font.setColor(Color.PINK);
+        game.font.getData().setScale(4.5f);
+        GlyphLayout layout = new GlyphLayout(game.font, "ID NOT FOUND!");
+        game.font.draw(game.batch, "ID NOT FOUND!", game.viewport.getWorldWidth()/2f - layout.width/2, game.viewport.getWorldHeight()/2f+10f);
+        game.font.getData().setScale(1f);
+        game.batch.end();
+    }
     
     @Override
     public void resize(int width, int height) {
@@ -257,4 +316,61 @@ public class MenuScreen implements Screen {
     
     @Override
     public void dispose() {}
+
+
+    //Implement input-processor
+    @Override
+    public boolean keyTyped(char character){
+        //Here we simulating a real-time keyboard input process
+        if(isLoading){
+            // Enter means confirming (End input)
+            if (character == '\r' || character == '\n') {
+                confirmName();
+            }
+            // BackSpace
+            else if (character == 8) {
+                if (playerIDInput.length() > 0) {
+                    // Delete the last char
+                    playerIDInput = playerIDInput.substring(0, playerIDInput.length() - 1);
+                }
+            }
+            // concatenate
+            else if (playerIDInput.length() < 12) {
+                // visible/normal char(letters and numbers etc.) only
+                if (character >= 32 && character <= 126) {
+                    playerIDInput += character;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private void confirmName() {
+        //Release the input control (or we can't use it on the main menu)
+        Gdx.input.setInputProcessor(null);
+
+        ArchiveEntry record = ArchiveManager.getArchive(playerIDInput);
+        if(record == null){
+            playerIDInput = "";
+            isLoading = false;
+            notFoundTimer = NOT_FOUND_SHOW;
+            return;
+        }
+
+        //Load to the recorded game
+        game.setScreen(new GameScreen(game, record.map, record.heroType, record.level, record.score));
+        
+    }
+    
+     //No use
+    @Override public boolean keyDown(int keycode) { return false; }
+    @Override public boolean keyUp(int keycode) { return false; }
+    @Override public boolean touchDown(int screenX, int screenY, int pointer, int button) { return false; }
+    @Override public boolean touchUp(int screenX, int screenY, int pointer, int button) { return false; }
+    @Override public boolean touchDragged(int screenX, int screenY, int pointer) { return false; }
+    @Override public boolean mouseMoved(int screenX, int screenY) { return false; }
+    @Override public boolean scrolled(float amountX, float amountY) { return false; }
+    @Override public boolean touchCancelled(int screenX, int screenY, int pointer, int button) {return false;}
+
 }

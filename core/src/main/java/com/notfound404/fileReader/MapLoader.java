@@ -4,10 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.notfound404.arena.GameArena;
 
 import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.File;
-import java.io.FileInputStream;
-
 import java.util.Random;
 
 /**
@@ -46,8 +42,8 @@ public class MapLoader {
         // 至少17个
         int speedLines = rand.nextInt(7) + 17; 
         for (int i = 0; i < speedLines; i++) {
-            int startX = rand.nextInt(PLAY_SIZE) + 2;
-            int startY = rand.nextInt(PLAY_SIZE) + 2;
+            int startX = rand.nextInt(PLAY_SIZE) + BORDER_WIDTH;
+            int startY = rand.nextInt(PLAY_SIZE) + BORDER_WIDTH;
             // 长度较长，模拟道路
             int length = rand.nextInt(10) + 12; 
             drawCluster(arena, startX, startY, length, 3);
@@ -57,8 +53,8 @@ public class MapLoader {
         // 至少15个
         int mountainClusters = rand.nextInt(5) + 15; 
         for (int i = 0; i < mountainClusters; i++) {
-            int startX = rand.nextInt(PLAY_SIZE) + 2;
-            int startY = rand.nextInt(PLAY_SIZE) + 2;
+            int startX = rand.nextInt(PLAY_SIZE) + BORDER_WIDTH;
+            int startY = rand.nextInt(PLAY_SIZE) + BORDER_WIDTH;
             // 山簇大小适中，保证不封死地图
             int clusterSize = rand.nextInt(6) + 4; 
             drawCluster(arena, startX, startY, clusterSize, 4);
@@ -74,7 +70,7 @@ public class MapLoader {
     private void drawCluster(GameArena arena, int x, int y, int size, int type) {
         for (int i = 0; i < size; i++) {
             // 确保在 40x40 游玩区域内 (坐标 2 到 41)
-            if (x >= 2 && x < 42 && y >= 2 && y < 42) {
+            if (x >= BORDER_WIDTH && x < PLAY_SIZE + BORDER_WIDTH && y >= BORDER_WIDTH && y < PLAY_SIZE + BORDER_WIDTH) {
                 // 如果当前位置已经是另一种物体，不再覆盖，以维持比例平衡
                 if (arena.getCellValue(x, y) == 0) {
                     arena.setCellValue(x, y, type);
@@ -109,9 +105,9 @@ public class MapLoader {
         int row = 0;
         while ((line = reader.readLine()) != null && row < PLAY_SIZE) {
             String[] values = line.trim().split("[,\\s]+");
-            for (int col = 0; col < values.length && col < 44; col++) {
+            for (int col = 0; col < values.length && col < FINAL_SIZE; col++) {
                 // 保持你的变量名和逻辑不变
-                arena.setCellValue(col + 2, row + 2, Integer.parseInt(values[col]));
+                arena.setCellValue(col + BORDER_WIDTH, row + BORDER_WIDTH, Integer.parseInt(values[col]));
             }
             row++;
         }

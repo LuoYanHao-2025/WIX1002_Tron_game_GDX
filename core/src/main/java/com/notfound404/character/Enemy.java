@@ -7,8 +7,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.notfound404.levelsystem.EnemyLevelSystem;
 import com.notfound404.levelsystem.BaseLevelSystem;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.util.Random;
 import java.util.Scanner;
 
