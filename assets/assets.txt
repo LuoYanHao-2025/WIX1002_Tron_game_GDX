@@ -9,6 +9,8 @@ image/halfHeart.png
 map/Accelerate Territory.txt
 map/Death Canyon.txt
 map/Mirror Battery.txt
+music/Quirky Runner.mp3
+music/tron-pop-instrumental.mp3
 rider/Enemies.txt
 rider/Players.txt
 uistory/boss.png

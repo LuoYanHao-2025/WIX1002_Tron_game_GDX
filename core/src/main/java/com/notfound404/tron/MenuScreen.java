@@ -107,6 +107,7 @@ public class MenuScreen implements Screen, InputProcessor {
         switch (selectedIndex) {
             case 0: // START GAME
                 game.setScreen(new PlayerSelectionScreen(game));
+                this.dispose();
                 break;
             case 1: // LOAD SYSTEM
                 isLoading = true;
@@ -117,6 +118,7 @@ public class MenuScreen implements Screen, InputProcessor {
                 break;
             case 3: // RANKS
                 game.setScreen(new LeaderBoard(game));
+                this.dispose();
                 break;
             case 4: // EXIT
                 Gdx.app.exit();
@@ -360,6 +362,7 @@ public class MenuScreen implements Screen, InputProcessor {
 
         //Load to the recorded game
         game.setScreen(new GameScreen(game, record.map, record.heroType, record.level, record.score));
+        this.dispose();
         
     }
     

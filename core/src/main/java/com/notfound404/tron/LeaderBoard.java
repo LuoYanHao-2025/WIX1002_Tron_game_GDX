@@ -52,6 +52,7 @@ public class LeaderBoard implements Screen{
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             game.setScreen(new MenuScreen(game));
+            this.dispose();
         }
     }
 

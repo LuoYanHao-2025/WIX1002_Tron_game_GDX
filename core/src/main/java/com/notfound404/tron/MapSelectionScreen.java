@@ -60,9 +60,11 @@ public class MapSelectionScreen implements Screen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
             // Pass the selected map name to GameScreen
             game.setScreen(new GameScreen(game, maps[selectedIndex], heroType));
+            this.dispose();
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             game.setScreen(new PlayerSelectionScreen(game));
+            this.dispose();
         }
     }
 

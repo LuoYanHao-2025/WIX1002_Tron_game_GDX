@@ -4,12 +4,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.notfound404.arena.GameArena;
 import com.notfound404.arena.GameArena.Direction;
@@ -43,6 +45,9 @@ public class GameScreen implements Screen, InputProcessor {
     private Texture discoTexture;
     private Texture fullLPTexture;
     private Texture halfLPTexture;
+    private Array<Music> playList;
+    private Music currentMusic;
+    private int currentMusicIndex = 0;
     //Here need to declare objects will be used in the Game.
     //这里需要声明一些游戏内要用到的对象，例如车，地图，背景音乐等等
     private GameArena arena;
@@ -65,6 +70,16 @@ public class GameScreen implements Screen, InputProcessor {
         discoTexture = new Texture("./image/disco.png");
         fullLPTexture = new Texture("./image/fullHeart.png");
         halfLPTexture = new Texture("./image/halfHeart.png");
+
+        //music
+        playList = new Array<Music>();
+        playList.add(Gdx.audio.newMusic(Gdx.files.internal("music/Quirky Runner.mp3")));
+        playList.add(Gdx.audio.newMusic(Gdx.files.internal("music/tron-pop-instrumental.mp3")));
+        
+        //Disable the loop setting
+        for(Music m : playList) {
+            m.setLooping(false);
+        }
 
         arena = new GameArena();
         touchPos = new Vector2();
@@ -126,7 +141,25 @@ public class GameScreen implements Screen, InputProcessor {
     @Override
     public void show() {
         // Prepare your screen here.
+        // Play the first Music
+        startMusic(0);
     }
+
+    //Music play methods
+    //===========================================
+    private void startMusic(int index){
+        currentMusic = playList.get(index);
+        currentMusic.play();
+    }
+
+    private void playNextSong() {
+        currentMusicIndex++;
+        if (currentMusicIndex >= playList.size) {
+            currentMusicIndex = 0;
+        }
+        startMusic(currentMusicIndex);
+    }
+    //=============================================
 
     @Override
     public void render(float delta) {
@@ -164,7 +197,12 @@ public class GameScreen implements Screen, InputProcessor {
              
         }
 
-        drawGameScene(); 
+        drawGameScene();
+        //music handling
+        if (!currentMusic.isPlaying()) {
+            playNextSong();
+        }
+
     }
 
     // 4. 检查剧情触发 (根据玩家等级)
@@ -488,6 +526,8 @@ private void renderStoryUI() {
         if (fullLPTexture != null) fullLPTexture.dispose();
         if (halfLPTexture != null) halfLPTexture.dispose();
          // 如果 painter 或其他对象有 texture，也要 dispose
+        for(Music music : playList)
+            music.dispose();
 
     }
 
@@ -554,6 +594,7 @@ private void renderStoryUI() {
 
         //LB screen
         game.setScreen(new LeaderBoard(game));
+        this.dispose();
         
     }
     

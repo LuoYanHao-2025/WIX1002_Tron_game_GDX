@@ -34,3 +34,8 @@ For example, `core:clean` removes `build` folder only from the `core` project.
 
 ## Contributors
 This Game is developed by WIX1002 Project Group 404NotFound.
+
+## Sources
+The musics are downloaded from free source website:
+https://opengameart.org/content/quirky-runner
+https://freesound.org/people/kontraamusic/sounds/798252/

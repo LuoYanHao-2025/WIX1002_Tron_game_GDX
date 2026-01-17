@@ -49,9 +49,11 @@ public class PlayerSelectionScreen implements Screen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
             // 跳转到地图选择，并将选择的英雄名称传过去
             game.setScreen(new MapSelectionScreen(game, heroes[selectedIndex]));
+            this.dispose();
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             game.setScreen(new MenuScreen(game));
+            this.dispose();
         }
     }
 
