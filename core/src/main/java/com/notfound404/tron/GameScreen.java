@@ -1,5 +1,8 @@
 package com.notfound404.tron;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
@@ -587,6 +590,8 @@ private void renderStoryUI() {
         //Release the input control (or we can't use it on the main menu)
         Gdx.input.setInputProcessor(null);
 
+        String today = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+
         if(overHandling){
             // Store ur grade into the leaderboard
             ArchiveManager.saveScoreLB(
@@ -595,7 +600,8 @@ private void renderStoryUI() {
                     heroType,
                     mapName,
                     arena.getPlayerBike().getPlayerLevel(), 
-                    arena.getPlayerBike().getExp()
+                    arena.getPlayerBike().getExp(),
+                    today
                 )
             );
         }else if(saveHandling){
@@ -606,7 +612,8 @@ private void renderStoryUI() {
                     heroType,
                     mapName,
                     arena.getPlayerBike().getPlayerLevel(), 
-                    arena.getPlayerBike().getExp()
+                    arena.getPlayerBike().getExp(),
+                    today
                 )
             );
         }

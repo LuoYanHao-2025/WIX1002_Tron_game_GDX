@@ -9,27 +9,31 @@ import com.badlogic.gdx.files.FileHandle;
 public class ArchiveManager {
 
     // 确保路径指向你验证成功的嵌套位置
-    final private static String LEADERBOARD_FILE = "score/leaderboard.txt";
-    final private static String ARCHIVE_FILE = "score/archive.txt";
+    final private static String LEADERBOARD_FILE = "score/leaderboard.csv";
+    final private static String ARCHIVE_FILE = "score/archive.csv";
 
+    //Titles of columns
+    final private static String HEADER = "PlayerID,HeroType,Map,Level,Score,Date";
     public static class ArchiveEntry implements Comparable<ArchiveEntry>{
         public final String playerID;
         public final String heroType;
         public int level;
         public int score;
         public final String map;
+        public final String date;
         
-        public ArchiveEntry(String ID, String heroType, String map, int level, int score){
+        public ArchiveEntry(String ID, String heroType, String map, int level, int score, String date){
             this.playerID = ID;
             this.heroType = heroType;
             this.map = map;
             this.level = level;
             this.score = score;
+            this.date = date;
         }
 
         @Override
         public String toString(){
-            return playerID +","+ heroType +","+ map +","+level+","+score;
+            return playerID +","+ heroType +","+ map +","+level+","+score + "," + date;
         }
 
         @Override
@@ -44,8 +48,10 @@ public class ArchiveManager {
             FileHandle file = Gdx.files.local(LEADERBOARD_FILE);
             
             //Create a new file for users(if it does not exist)
-            if(!file.parent().exists())
+            if(!file.exists()){
                 file.parent().mkdirs();
+                file.writeString(HEADER + "\n", false);
+            }
             file.writeString(newRecord.toString() + "\n", true);
         } catch (Exception e) {
             System.err.println("Score Saving Error: " + e.getMessage());
@@ -56,8 +62,10 @@ public class ArchiveManager {
         try {
             FileHandle file = Gdx.files.local(ARCHIVE_FILE);
 
-            if(!file.parent().exists())
+            if(!file.exists()){
                 file.parent().mkdirs();
+                file.writeString(HEADER + "\n", false);
+            }
             file.writeString(newRecord.toString() + "\n", true);
         } catch (Exception e) {
             System.err.println("Archive Saving Error: " + e.getMessage());
@@ -74,12 +82,20 @@ public class ArchiveManager {
 
         // 保持你原始的 Scanner 逻辑
         try (Scanner scanner = new Scanner(file.reader())) {
+            //Skip the header line
+            if(scanner.hasNextLine()) scanner.nextLine();
+
             while(scanner.hasNextLine()){
                 String lineStr = scanner.nextLine();
                 if(lineStr.trim().isEmpty()) continue;
                 String[] line = lineStr.split(",");
                 try {
-                    scores.add(new ArchiveEntry(line[0], line[1], line[2], Integer.parseInt(line[3].trim()), Integer.parseInt(line[4].trim())));
+
+                    scores.add(new ArchiveEntry(
+                        line[0], line[1], line[2],
+                        Integer.parseInt(line[3].trim()),
+                        Integer.parseInt(line[4].trim()),
+                        line[5]));
                 } catch (Exception e) { }
             }
         } catch (Exception e) {
@@ -108,7 +124,10 @@ public class ArchiveManager {
                 if(lineStr.trim().isEmpty()) continue;
                 String[] line = lineStr.split(",");
                 try {
-                    records.add(new ArchiveEntry(line[0], line[1], line[2], Integer.parseInt(line[3].trim()), Integer.parseInt(line[4].trim())));
+                    records.add(new ArchiveEntry(line[0], line[1], line[2],
+                        Integer.parseInt(line[3].trim()),
+                        Integer.parseInt(line[4].trim()),
+                    line[5]));
                 } catch (Exception e) { }
             }
         } catch (Exception e) {

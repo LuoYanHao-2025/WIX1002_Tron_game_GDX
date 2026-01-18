@@ -14,9 +14,15 @@ public class LeaderBoard implements Screen{
     final Main game;
     ArrayList<ArchiveManager.ArchiveEntry> topPlayers;
 
+    private static String formatHeader = "%-6s %-16s %-8s %-8s %-10s %-12s";
+    private static String formatLine = "%-8d %-12s %-8d %-16d %-10s %-12s";
+    private String titleLine;
+    private static final int LEFT_ALIGN_X = 80;
+
     public LeaderBoard(Main game){
         this.game = game;
         topPlayers = ArchiveManager.getTopScores(10);
+        titleLine = String.format(formatHeader, "No.", "ID", "LV", "SCORE", "HERO", "DATE");
     }
 
     @Override
@@ -29,25 +35,28 @@ public class LeaderBoard implements Screen{
 
         game.batch.begin();
         game.font.setColor(Color.YELLOW);
-        game.font.draw(game.batch, "TOP AGENTS", 200, 350);
+        game.font.draw(game.batch, "TOP AGENTS", game.viewport.getWorldWidth()/2-50f, 370);
         
         game.font.setColor(Color.WHITE);
-        float y = 300;
+        float y = 345;
         int rank = 1;
 
-        String title = "Rank        ID        LV    SCORE    HERO";
-        game.font.draw(game.batch, title, 150, y);
-        y-=30;
+        game.font.draw(game.batch, titleLine, LEFT_ALIGN_X, y);
+        y-=35;
         
         for (ArchiveEntry entry : topPlayers) {
-            String text = String.format("%-2d.    %12s   %3d          %6d        %5s", rank, entry.playerID, entry.level, entry.score, entry.level);
-            game.font.draw(game.batch, text, 150, y);
+            String text = String.format(
+                formatLine,
+                rank, entry.playerID, entry.level, entry.score,
+                entry.heroType, entry.date
+            );
+            game.font.draw(game.batch, text, LEFT_ALIGN_X, y);
             y -= 30;
             rank++;
         }
         
         game.font.setColor(Color.GRAY);
-        game.font.draw(game.batch, "Press ESC to Return", 150, 50);
+        game.font.draw(game.batch, "Press ESC to Return", LEFT_ALIGN_X, 50);
         game.batch.end();
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
