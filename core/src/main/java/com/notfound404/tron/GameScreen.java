@@ -415,7 +415,7 @@ private void renderStoryUI() {
     game.shapeRenderer.rect(padding, uiBottomOffset, barWidth * Math.min(xpProgress, 1.0f), barHeight);
 
     //血条和等级数值改为右侧显示
-    //The old version: display the LP and Level under the screen
+    //The old version: display the LP and Level under the screen========================================================================
 
     // 2. 生命值条 (LP Bar) - 位于经验条上方
     float lpBarY = uiBottomOffset + barHeight + 5f; // 间隔5像素
@@ -426,6 +426,7 @@ private void renderStoryUI() {
     // game.shapeRenderer.setColor(new Color(1f, 0.2f, 0.2f, 1f));
     // float lpProgress = player.getLP() / player.getMaxLP();
     // game.shapeRenderer.rect(padding, lpBarY, barWidth * Math.max(0, Math.min(lpProgress, 1.0f)), barHeight);
+    //==================================================================================================================================
     
     game.shapeRenderer.end();
 
@@ -458,6 +459,7 @@ private void renderStoryUI() {
         game.batch.draw(fullLPTexture, heartX, currentY,ICON_SIZE,ICON_SIZE);
         heartX += ICON_SIZE+2f;
 
+        //New Line if no space
         if (heartX > game.viewport.getWorldWidth() - ICON_SIZE) {
             heartX = UI_START_X;
             currentY -= ICON_SIZE + 2f;
@@ -478,7 +480,12 @@ private void renderStoryUI() {
     float discX = UI_START_X;
     for (int i = 0; i < ammoCount; i++) {
         game.batch.draw(discoTexture, discX, currentY, ICON_SIZE, ICON_SIZE);
-        discX += ICON_SIZE+5f;
+        discX += ICON_SIZE+2f;
+
+        if (discX > game.viewport.getWorldWidth() - ICON_SIZE) {
+            discX = UI_START_X;
+            currentY -= ICON_SIZE + 2f;
+        }
     }
     // 调整字体缩放，让UI文字稍微小一点更精致 (可选)
     // game.font.getData().setScale(0.8f);

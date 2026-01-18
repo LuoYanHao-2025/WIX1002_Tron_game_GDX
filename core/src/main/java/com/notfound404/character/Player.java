@@ -15,6 +15,7 @@ public class Player extends Bike {
     protected String playerID;//Enter by player, used for RANKING system
 
     private PlayerLevelSystem levelSystem; // 玩家的升级系统
+    private boolean isUltMode = false;
 
     private static String[] heroName;
     private static int[][] heroProperty;
@@ -71,6 +72,13 @@ public class Player extends Bike {
     public void retrieveDiscs(int count) {
         // 此时 discoMAX 已经是被 PlayerLevelSystem 升级过的值
         this.discoSlots = Math.min(this.discoSlots + count, this.discoMAX);
+    }
+
+    //UpBound: 10 discos
+    @Override
+    public void setDiscoMAX(int discoMAX) {
+        if(discoMAX<10)
+            super.setDiscoMAX(discoMAX);
     }
 
 
@@ -153,6 +161,27 @@ public class Player extends Bike {
     public boolean canShootDisc() {
         // 直接转发给你的系统
         return levelSystem.canShootDisc(this.discoSlots);
+    }
+
+    @Override
+    public void shootDisco(int targetX, int targetY) {
+        if(isUltMode){
+            for(int i = -1; i <= 1 ; i++)
+                for(int j = -1; j <= 1; j++)
+                    if(i == 0 && j == 0)
+                        continue;
+                    else 
+                        super.shootDisco(this.x + i, this.y + j);
+            //Re-load the Magazine
+            //Not like the BOSS can shoot for free, the player cost 1 for each shoot
+            this.discoSlots += 7;
+        }
+        else
+            super.shootDisco(targetX, targetY);
+    }
+
+    public void startUltMode(){
+        isUltMode = true;
     }
     
     /**

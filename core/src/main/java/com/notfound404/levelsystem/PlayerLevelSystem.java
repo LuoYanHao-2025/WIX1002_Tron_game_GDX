@@ -34,6 +34,9 @@ public class PlayerLevelSystem extends BaseLevelSystem {
             player.setDiscoSlots(player.getDiscoSlots() + 1); // 升级奖励补弹
             player.setDiscoRange(player.getDiscoRange() + 1);
         }
+
+        if(currentLevel==100)
+            player.startUltMode();
     }
     }
 
