@@ -13,7 +13,7 @@ import java.util.Scanner;
 public class Enemy extends Bike {
     public static int enemyCount = 0;
     public static int EXPplus = 0;
-    private final String enemyTypeName;
+    //private final String enemyTypeName;
     
     private EnemyLevelSystem levelSystem; // 敌人的升级系统
     private int difficulty; // 敌人难度级别
@@ -77,7 +77,7 @@ public class Enemy extends Bike {
 
         this.levelSystem = new EnemyLevelSystem(difficulty);
         this.levelSystem.setEnemy(this);
-        this.enemyTypeName = enemyName[difficulty];
+        //this.enemyTypeName = enemyName[difficulty];
 
         // 初始化 AI 参数 (难度越高，反应越快，射速越快)
         // 简化：用公式代替 switch 配置难度参数
