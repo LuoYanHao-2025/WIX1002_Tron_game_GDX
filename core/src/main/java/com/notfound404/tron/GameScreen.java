@@ -227,7 +227,9 @@ public class GameScreen implements Screen, InputProcessor {
                 // 对应你 addNewEnemy 里的难度跳跃点
                 storyManager.trigger("STRONGER");
             } else if (currentLevel == 99) {
-                storyManager.trigger("FINAL");
+                storyManager.trigger("FINAL"); 
+            } else if (currentLevel == 100){
+                storyManager.trigger("666");
             }
             lastStoryLevel = currentLevel;
         }
