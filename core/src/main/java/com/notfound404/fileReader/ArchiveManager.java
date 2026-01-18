@@ -9,8 +9,8 @@ import com.badlogic.gdx.files.FileHandle;
 public class ArchiveManager {
 
     // 确保路径指向你验证成功的嵌套位置
-    final private static String LEADERBOARD_FILE = "WIX1002_Tron_game_GDX-main/assets/Score/leaderboard.txt";
-    final private static String ARCHIVE_FILE = "WIX1002_Tron_game_GDX-main/assets/Score/archive.txt";
+    final private static String LEADERBOARD_FILE = "score/leaderboard.txt";
+    final private static String ARCHIVE_FILE = "score/archive.txt";
 
     public static class ArchiveEntry implements Comparable<ArchiveEntry>{
         public final String playerID;
@@ -42,6 +42,10 @@ public class ArchiveManager {
         try {
             // 使用 GDX 的 FileHandle 进行写入
             FileHandle file = Gdx.files.local(LEADERBOARD_FILE);
+            
+            //Create a new file for users(if it does not exist)
+            if(!file.parent().exists())
+                file.parent().mkdirs();
             file.writeString(newRecord.toString() + "\n", true);
         } catch (Exception e) {
             System.err.println("Score Saving Error: " + e.getMessage());
@@ -51,6 +55,9 @@ public class ArchiveManager {
     public static void saveScoreAch(ArchiveEntry newRecord) {
         try {
             FileHandle file = Gdx.files.local(ARCHIVE_FILE);
+
+            if(!file.parent().exists())
+                file.parent().mkdirs();
             file.writeString(newRecord.toString() + "\n", true);
         } catch (Exception e) {
             System.err.println("Archive Saving Error: " + e.getMessage());
@@ -61,6 +68,8 @@ public class ArchiveManager {
         ArrayList<ArchiveEntry> scores = new ArrayList<>();
         FileHandle file = Gdx.files.local(LEADERBOARD_FILE);
         
+        //The first time u play, no file exists.
+        //玩家第一次玩还没有存档文件，不报错弹出，只返回null然后告诉玩家找不到。
         if (!file.exists()) return scores;
 
         // 保持你原始的 Scanner 逻辑

@@ -1,6 +1,4 @@
 .gitkeep
-Score/archive.txt
-Score/leaderboard.txt
 image/bike.txt
 image/disco.png
 image/disco.txt
